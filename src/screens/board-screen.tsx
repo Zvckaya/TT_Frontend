@@ -3,19 +3,29 @@ import styled from "styled-components";
 import TittoBoard from "./board/tittoboard";
 import QnaBoard from "./board/qnaboard";
 
+type boardUrl = {
+  id: string;
+  page: number;
+};
+
 const Wrapper = styled.div`
   width: 100%;
-  border: 1px solid red;
   margin-top: 10px;
 `;
 
 const BoardScreen = () => {
   const [serachParams] = useSearchParams();
   const { boardId, page } = useParams();
-  console.log(boardId);
+  console.log(boardId, page);
 
   return (
-    <Wrapper>{boardId === "titto" ? <TittoBoard /> : <QnaBoard />}</Wrapper>
+    <Wrapper>
+      {boardId === "titto" ? (
+        <TittoBoard id={boardId} page={Number(page)} />
+      ) : (
+        <QnaBoard />
+      )}
+    </Wrapper>
   );
 };
 

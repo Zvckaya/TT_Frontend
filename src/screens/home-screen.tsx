@@ -48,7 +48,7 @@ const BoardDetail = styled.div`
 const HomeScreen = () => {
   return (
     <Wrapper>
-      <MaxSlider></MaxSlider>
+      <MaxSlider height="400px"></MaxSlider>
       <IconMenu>
         <MyIcon>
           <img src="imgs/myIcon.svg" alt="My Icon" />
