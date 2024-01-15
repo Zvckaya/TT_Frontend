@@ -1,22 +1,37 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./routes/protected-route";
-import MyNav from "./components/myNav";
 import AccountRoute from "./routes/account-route";
-import styled from "styled-components";
 import MyPageRoutes from "./routes/mypage-route";
 import BoardRoutes from "./routes/board-route";
 import MessageRoutes from "./routes/message-route";
+import styled, { createGlobalStyle } from "styled-components";
+import reset from "styled-reset";
+import TTlayout from "./components/TTlayout";
+import HomeScreen from "./screens/home-screen";
 
+const Wrapper = styled.div`
+  box-sizing: border-box;
+`;
+const GlobalStyles = createGlobalStyle`
+  ${reset}
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+`;
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
       <ProtectedRoute>
-        <MyNav />
+        <TTlayout />
       </ProtectedRoute>
     ),
     children: [
-      { path: "", element: <h1>홈</h1> },
+      { path: "", element: <HomeScreen /> },
       { path: "mypage/*", element: <MyPageRoutes /> },
       { path: "message/*", element: <MessageRoutes /> },
       { path: "board/*", element: <BoardRoutes /> },
@@ -35,9 +50,10 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <div>
+    <Wrapper>
+      <GlobalStyles />
       <RouterProvider router={router} />
-    </div>
+    </Wrapper>
   );
 }
 
