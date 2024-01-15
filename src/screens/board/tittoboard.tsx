@@ -84,6 +84,9 @@ const PostWrapper = styled.div`
   td:nth-child(4) {
     width: 17%;
   }
+  tr:last-child {
+    border-bottom: none;
+  }
 `;
 const CategoryDiv = styled.div`
   width: 28%;
