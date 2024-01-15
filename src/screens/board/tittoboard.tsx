@@ -3,6 +3,7 @@ import MaxSlider from "../../components/slider-max";
 import SearchIcon from "@mui/icons-material/Search";
 import TittoTitle from "../../components/board/title-titto";
 import NumberSelector from "../../components/board/number-selector";
+import CategorySelector from "../../components/board/category-selector";
 
 type boardUrl = {
   id: string;
@@ -16,6 +17,7 @@ const Wrapper = styled.div`
 const BoardWrapper = styled.div`
   display: flex;
   margin-top: 10px;
+  justify-content: space-between;
 `;
 
 const MainDiv = styled.div`
@@ -84,7 +86,7 @@ const PostWrapper = styled.div`
   }
 `;
 const CategoryDiv = styled.div`
-  width: 30%;
+  width: 28%;
 `;
 
 const TittoBoard = ({ id, page }: boardUrl) => {
@@ -161,10 +163,12 @@ const TittoBoard = ({ id, page }: boardUrl) => {
               </tbody>
             </table>
           </PostWrapper>
-          <NumberSelector id={id} page={page} pages={pages} />
+          <NumberSelector id={id} page={3} pages={32} />
         </MainDiv>
 
-        <CategoryDiv>카테고리</CategoryDiv>
+        <CategoryDiv>
+          <CategorySelector></CategorySelector>
+        </CategoryDiv>
       </BoardWrapper>
     </Wrapper>
   );

@@ -176,7 +176,7 @@ const TTlayout = () => {
               onClick={() => setPopupOpen(false)}
             >
               <MailOutlineIcon style={{ fontSize: "30px" }} />
-              <NavImg src="imgs/UserProfile.png" alt="User-Profile" />
+              <NavImg src="/imgs/UserProfile.png" alt="User-Profile" />
               <MenuIcon
                 style={{ fontSize: "30px" }}
                 onClick={(e: React.MouseEvent<SVGSVGElement>) => togglePopup(e)}
@@ -188,7 +188,7 @@ const TTlayout = () => {
                     <PopupMyPage onClick={() => navigate("/mypage")}>
                       마이페이지
                     </PopupMyPage>
-                    <PopupLogout onClick={() => navigate("/account/login")}>
+                    <PopupLogout onClick={() => navigate("/account/sign_in")}>
                       로그아웃
                     </PopupLogout>
                   </PopupContent>
@@ -198,11 +198,9 @@ const TTlayout = () => {
           </NavLi>
         </NavUl>
       </NavWrapper>
-
       <Container>
         <Outlet />
       </Container>
-
       <TTfooter />
     </>
   );
