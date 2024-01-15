@@ -1,47 +1,86 @@
 import styled from "styled-components";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import SmsIcon from "@mui/icons-material/Sms";
 
-export enum Hcategory {
-  멘토구해요,
-  멘티구해요,
-  어울려요,
-  궁금해요,
+enum Category {
+  MentorSearch,
+  MenteeSearch,
+  MakeFriends,
+  Question,
 }
 
-type HDetailProps = {
-  category: Hcategory;
+type HBoardType = {
+  category: Category;
   title: string;
   detail: string;
+  view: number;
+  comment: number;
 };
 
-const HBoardWrapper = styled.div`
-  display: block;
+const categoryToString = (category: Category): string => {
+  switch (category) {
+    case Category.MentorSearch:
+      return "멘토찾아요";
+    case Category.MenteeSearch:
+      return "멘티찾아요";
+    case Category.MakeFriends:
+      return "어울려요";
+    case Category.Question:
+      return "질문있어요";
+    default:
+      return "";
+  }
+};
+
+const BoardWrapper = styled.div`
+  padding-top: 10px;
   width: 100%;
-  border-bottom: 1px solid #dadada;
   color: #bababa;
+  border-bottom: 2px solid #bababa;
+  padding-bottom: 10px;
+
   .category {
     font-size: 1em;
+    font-weight: bold;
+    padding-bottom: 10px;
   }
   .title {
     color: black;
-    font-weight: bold;
+    font-size: 1.3em;
   }
   .detail {
-    font-size: 1em;
     font-weight: 100;
-    padding-top: 30px;
+    font-size: 1em;
+    padding-top: 10px;
+    padding-bottom: 5px;
+  }
+  span {
+    display: inline-block;
   }
 `;
 
-const HBoarddetail = ({ category, title, detail }: HDetailProps) => {
+const HBoardDetail = ({
+  category,
+  title,
+  detail,
+  view,
+  comment,
+}: HBoardType) => {
   return (
-    <HBoardWrapper>
-      <span className="category">{category}</span>
+    <BoardWrapper>
+      <span className="category">{categoryToString(category)}</span>
       <br />
       <span className="title">{title}</span>
       <br />
       <span className="detail">{detail}</span>
-    </HBoardWrapper>
+      <br />
+      <div>
+        <VisibilityIcon style={{ fontSize: "1em" }} /> {view}{" "}
+        <div style={{ display: "inline-block", width: "10px" }}> </div>
+        <SmsIcon style={{ fontSize: "1em" }}></SmsIcon> {comment}
+      </div>
+    </BoardWrapper>
   );
 };
 
-export default HBoarddetail;
+export default HBoardDetail;
