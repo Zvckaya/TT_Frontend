@@ -16,7 +16,6 @@ const Wrapper = styled.div`
 const BoardScreen = () => {
   const [serachParams] = useSearchParams();
   const { boardId, page } = useParams();
-  console.log(boardId, page);
 
   return (
     <Wrapper>
