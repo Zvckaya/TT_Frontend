@@ -15,7 +15,7 @@ const NavUl = styled.ul`
   padding: 0;
   margin: 0;
   display: flex;
-  width: 871px;
+  width: 1100px;
   border: 1px solid red;
 `;
 
@@ -57,7 +57,7 @@ const NavLogo = styled.h1`
 
 const Container = styled.div`
   margin: 0 auto;
-  width: 871px;
+  width: 1100px;
   text-align: center;
 `;
 

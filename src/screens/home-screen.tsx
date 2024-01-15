@@ -22,6 +22,7 @@ const MyIcon = styled.div`
 
   img {
     display: block;
+    padding-bottom: 10px;
   }
 `;
 

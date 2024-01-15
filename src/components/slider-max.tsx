@@ -6,6 +6,8 @@ import Slider from "react-slick";
 
 const SliderWrap = styled.div`
   width: 100%;
+  border-radius: 10px;
+  margin-top: 20px;
 `;
 
 const Img1 = styled.img`
