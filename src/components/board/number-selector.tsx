@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { useState } from "react";
 
 type boardUrl = {
   id: string;
@@ -9,7 +10,7 @@ type boardUrl = {
 };
 
 const NumberSelect = styled.div`
-  margin-top: 10px;
+  margin-top: 20px;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -18,6 +19,25 @@ const NumberSelect = styled.div`
 const NumDiv = styled.div`
   background-color: #e8eef2;
   line-height: 2em;
+  display: flex;
+`;
+
+const NumSpan = styled.div`
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 1.2em;
+  font-weight: bold;
+  border-radius: 5px;
+
+  &:hover {
+    cursor: pointer;
+    background-color: black;
+    color: white;
+  }
+  &.selected {
+    background-color: black;
+    color: white;
+  }
 `;
 
 const ArrowDiv = styled.div`
@@ -30,21 +50,45 @@ const ArrowDiv = styled.div`
   align-items: center;
   margin-left: 10px;
   margin-right: 10px;
-  .first {
-  }
-  .last {
-  }
 `;
+
 const NumberSelector = ({ id, page, pages }: boardUrl) => {
-  const nowPage = page;
-  const viewPage = pages / nowPage;
+  const [currentPage, setCurrentPage] = useState(page);
+
+  const handleArrowClick = (increment: number) => {
+    const newPage = Math.floor(currentPage / 5) * 5 + increment + 1;
+
+    if (newPage >= 1 && newPage <= pages) {
+      setCurrentPage(newPage);
+    }
+  };
+  const renderPageNumbers = () => {
+    const startPage = Math.floor((currentPage - 1) / 5) * 5 + 1;
+    const remainingPages = pages - startPage + 1;
+
+    return Array.from(
+      { length: Math.min(5, remainingPages) },
+      (_, i) => startPage + i
+    );
+  };
+
   return (
     <NumberSelect>
-      <ArrowDiv className="">
+      <ArrowDiv onClick={() => handleArrowClick(-5)}>
         <ArrowBackIosIcon style={{ fontSize: "13px" }} />
       </ArrowDiv>
-      <NumDiv>1,2,3,4,5</NumDiv>
-      <ArrowDiv className="">
+      <NumDiv>
+        {renderPageNumbers().map((pageNumber) => (
+          <NumSpan
+            key={pageNumber}
+            className={pageNumber === currentPage ? "selected" : ""}
+            onClick={() => setCurrentPage(pageNumber)}
+          >
+            {pageNumber}
+          </NumSpan>
+        ))}
+      </NumDiv>
+      <ArrowDiv onClick={() => handleArrowClick(5)}>
         <ArrowForwardIosIcon style={{ fontSize: "13px" }} />
       </ArrowDiv>
     </NumberSelect>
