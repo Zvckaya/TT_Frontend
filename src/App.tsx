@@ -8,6 +8,9 @@ import styled, { createGlobalStyle } from "styled-components";
 import reset from "styled-reset";
 import TTlayout from "./components/TTlayout";
 import HomeScreen from "./screens/home-screen";
+import LoginPage from "./screens/login/loginpage";
+import SignUpPage from "./screens/login/signuppage";
+import WelcomePage from "./screens/login/welcomepage";
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -42,9 +45,9 @@ const router = createBrowserRouter([
     path: "/account",
     element: <AccountRoute />,
     children: [
-      { path: "sign_in", element: <h1>로그인 페이지</h1> },
-      { path: "sign_up/:userId", element: <h1>회원가입 페이지</h1> },
-      { path: "welcome", element: <h1>회원가입 완료</h1> },
+      { path: "sign_in", element: <LoginPage /> },
+      { path: "sign_up/:userId", element: <SignUpPage /> },
+      { path: "welcome", element: <WelcomePage /> },
     ],
   },
 ]);
