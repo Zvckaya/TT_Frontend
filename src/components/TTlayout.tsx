@@ -175,7 +175,10 @@ const TTlayout = () => {
               className="nav-profile"
               onClick={() => setPopupOpen(false)}
             >
-              <MailOutlineIcon style={{ fontSize: "30px" }} />
+              <MailOutlineIcon
+                style={{ fontSize: "30px" }}
+                onClick={() => navigate("/message")}
+              />
               <NavImg src="imgs/UserProfile.png" alt="User-Profile" />
               <MenuIcon
                 style={{ fontSize: "30px" }}
