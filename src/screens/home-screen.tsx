@@ -26,6 +26,21 @@ const MyIcon = styled.div`
   }
 `;
 
+const BoardWrapper = styled.div`
+  width: 100%;
+  margin-top: 40px;
+  display: flex;
+`;
+
+const BoardDetail = styled.div`
+  width: 50%;
+  text-align: left;
+  span {
+    font-size: 25px;
+    font-weight: bold;
+  }
+`;
+
 const HomeScreen = () => {
   return (
     <Wrapper>
@@ -44,6 +59,14 @@ const HomeScreen = () => {
           티칭공간
         </MyIcon>
       </IconMenu>
+      <BoardWrapper>
+        <BoardDetail>
+          <span>티토 찾아요</span>
+        </BoardDetail>
+        <BoardDetail>
+          <span>질문 있어요</span>
+        </BoardDetail>
+      </BoardWrapper>
     </Wrapper>
   );
 };
