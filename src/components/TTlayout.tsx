@@ -1,6 +1,6 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-
+import TTfooter from "./TTfooter";
 const NavWrapper = styled.nav`
   width: 100%;
   background-color: #fff;
@@ -86,6 +86,7 @@ const TTlayout = () => {
       <Container>
         <Outlet />
       </Container>
+      <TTfooter />
     </>
   );
 };
