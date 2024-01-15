@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import MaxSlider from "../components/slider-max";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import HBoarddetail from "../components/home/board-detail";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -61,10 +63,21 @@ const HomeScreen = () => {
       </IconMenu>
       <BoardWrapper>
         <BoardDetail>
-          <span>티토 찾아요</span>
+          <span>
+            티토 찾아요
+            <ArrowForwardIosIcon />
+          </span>
+          <HBoarddetail
+            category={1}
+            title="안녕하세요"
+            detail="안녕하세요"
+          ></HBoarddetail>
         </BoardDetail>
         <BoardDetail>
-          <span>질문 있어요</span>
+          <span>
+            질문 있어요
+            <ArrowForwardIosIcon />
+          </span>
         </BoardDetail>
       </BoardWrapper>
     </Wrapper>
