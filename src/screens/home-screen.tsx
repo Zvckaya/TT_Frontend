@@ -32,14 +32,16 @@ const BoardWrapper = styled.div`
   width: 100%;
   margin-top: 40px;
   display: flex;
+  justify-content: space-between;
 `;
 
 const BoardDetail = styled.div`
-  width: 50%;
+  width: 49%;
   text-align: left;
   span {
     font-size: 25px;
     font-weight: bold;
+    display: inline-block;
   }
 `;
 
@@ -63,21 +65,58 @@ const HomeScreen = () => {
       </IconMenu>
       <BoardWrapper>
         <BoardDetail>
-          <span>
+          <span style={{ paddingBottom: "10px" }}>
             티토 찾아요
             <ArrowForwardIosIcon />
           </span>
           <HBoarddetail
-            category={1}
+            category={0}
             title="안녕하세요"
             detail="안녕하세요"
+            view={10}
+            comment={0}
+          ></HBoarddetail>
+          <HBoarddetail
+            category={0}
+            title="안녕하세요"
+            detail="안녕하세요"
+            view={10}
+            comment={0}
+          ></HBoarddetail>
+          <HBoarddetail
+            category={0}
+            title="안녕하세요"
+            detail="안녕하세요"
+            view={10}
+            comment={0}
           ></HBoarddetail>
         </BoardDetail>
         <BoardDetail>
-          <span>
+          <span style={{ paddingBottom: "10px" }}>
             질문 있어요
             <ArrowForwardIosIcon />
           </span>
+          <HBoarddetail
+            category={3}
+            title="안녕하세요"
+            detail="안녕하세요"
+            view={10}
+            comment={0}
+          ></HBoarddetail>
+          <HBoarddetail
+            category={3}
+            title="안녕하세요"
+            detail="안녕하세요"
+            view={10}
+            comment={0}
+          ></HBoarddetail>
+          <HBoarddetail
+            category={3}
+            title="안녕하세요"
+            detail="안녕하세요"
+            view={10}
+            comment={0}
+          ></HBoarddetail>
         </BoardDetail>
       </BoardWrapper>
     </Wrapper>
