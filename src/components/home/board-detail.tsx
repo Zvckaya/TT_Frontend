@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import SmsIcon from "@mui/icons-material/Sms";
 
 enum Category {
   MentorSearch,
@@ -50,6 +52,7 @@ const BoardWrapper = styled.div`
     font-weight: 100;
     font-size: 1em;
     padding-top: 10px;
+    padding-bottom: 5px;
   }
   span {
     display: inline-block;
@@ -70,6 +73,12 @@ const HBoardDetail = ({
       <span className="title">{title}</span>
       <br />
       <span className="detail">{detail}</span>
+      <br />
+      <div>
+        <VisibilityIcon style={{ fontSize: "1em" }} /> {view}{" "}
+        <div style={{ display: "inline-block", width: "10px" }}> </div>
+        <SmsIcon style={{ fontSize: "1em" }}></SmsIcon> {comment}
+      </div>
     </BoardWrapper>
   );
 };

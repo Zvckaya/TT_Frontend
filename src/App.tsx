@@ -11,6 +11,7 @@ import HomeScreen from "./screens/home-screen";
 
 const Wrapper = styled.div`
   box-sizing: border-box;
+  min-width: 1100px;
 `;
 const GlobalStyles = createGlobalStyle`
   ${reset}
