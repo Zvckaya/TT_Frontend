@@ -6,9 +6,6 @@ import PostForm from "../screens/board/postForm";
 import ModifiyBoard from "../screens/board/modifyForm";
 
 const BoardRoutes: React.FC = () => {
-  const { boardId, postId } = useParams();
-  console.log(boardId, postId);
-
   return (
     <Routes>
       <Route path="lists/:boardId/:page" element={<BoardScreen />} />
