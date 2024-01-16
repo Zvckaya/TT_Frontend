@@ -46,16 +46,20 @@ const BoardWrapper = styled.div`
   }
   .title {
     color: black;
-    font-size: 1.3em;
+    font-size: 1.1em;
   }
   .detail {
     font-weight: 100;
-    font-size: 1em;
+    font-size: 0.8em;
     padding-top: 10px;
     padding-bottom: 5px;
   }
   span {
     display: inline-block;
+  }
+  .show-comment {
+    font-size: 0.9em;
+    color: #bababa;
   }
 `;
 
@@ -74,10 +78,10 @@ const HBoardDetail = ({
       <br />
       <span className="detail">{detail}</span>
       <br />
-      <div>
-        <VisibilityIcon style={{ fontSize: "1em" }} /> {view}{" "}
+      <div className="show-comment">
+        <VisibilityIcon style={{ fontSize: "0.8em" }} /> {view}{" "}
         <div style={{ display: "inline-block", width: "10px" }}> </div>
-        <SmsIcon style={{ fontSize: "1em" }}></SmsIcon> {comment}
+        <SmsIcon style={{ fontSize: "0.8em" }}></SmsIcon> {comment}
       </div>
     </BoardWrapper>
   );

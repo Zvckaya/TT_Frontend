@@ -71,23 +71,23 @@ const HomeScreen = () => {
           </span>
           <HBoarddetail
             category={0}
-            title="안녕하세요"
-            detail="안녕하세요"
-            view={10}
-            comment={0}
+            title="C++ 한솥밥 하실분구해요!"
+            detail="안녕하세요, 혹시 C++한솥밥 하실 분 계신가요? 저는 저번학기 김학수 C++ 1등 으로 수...."
+            view={41}
+            comment={4}
           ></HBoarddetail>
           <HBoarddetail
-            category={0}
-            title="안녕하세요"
-            detail="안녕하세요"
-            view={10}
-            comment={0}
+            category={1}
+            title="모바일 게임 UX디자인 멘토님!"
+            detail="이번에 열리는 모바일 게임 UX디자인 김정수 교수님 한솥밥 멘토님 구해요! 정말 열심히....."
+            view={20}
+            comment={2}
           ></HBoarddetail>
           <HBoarddetail
-            category={0}
-            title="안녕하세요"
-            detail="안녕하세요"
-            view={10}
+            category={2}
+            title="알고리즘 어울림"
+            detail="알고리즘 스터디 하실분 구합니다. 매주 온라인+ 오프라인에 진행해요~ 자세한 사항은 쪽..."
+            view={24}
             comment={0}
           ></HBoarddetail>
         </BoardDetail>
@@ -98,24 +98,24 @@ const HomeScreen = () => {
           </span>
           <HBoarddetail
             category={3}
-            title="안녕하세요"
-            detail="안녕하세요"
+            title="VS CODE 에러가 났어요 "
+            detail="이번에 처음 설치하고 실행하려는데 .... eESDADASDSADASD에러가 나요 ㅠㅠ , 어떡해 해야할까......"
             view={10}
-            comment={0}
+            comment={1}
           ></HBoarddetail>
           <HBoarddetail
             category={3}
-            title="안녕하세요"
-            detail="안녕하세요"
-            view={10}
-            comment={0}
+            title="경영관리 이번 과제 질문이.."
+            detail="저번 12월 3일 진행한 수업과제 에서 이부분이 이해가 안되요......"
+            view={20}
+            comment={1}
           ></HBoarddetail>
           <HBoarddetail
             category={3}
-            title="안녕하세요"
-            detail="안녕하세요"
+            title="C++ 한솥밥 하실분 구해요!"
+            detail="안녕하세요, 혹시 C++한솥밥 하실 분 계신가요? 저는 저번학기 김학수 C++ 1등 으로 수강....."
             view={10}
-            comment={0}
+            comment={1}
           ></HBoarddetail>
         </BoardDetail>
       </BoardWrapper>
