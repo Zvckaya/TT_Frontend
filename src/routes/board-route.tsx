@@ -1,7 +1,14 @@
-import { Routes, Route } from "react-router-dom";
+// BoardRoutes 컴포넌트
+import React from "react";
+import { Routes, Route, useParams } from "react-router-dom";
 import BoardScreen from "../screens/board-screen";
+import PostForm from "../screens/board/postForm";
+import ModifiyBoard from "../screens/board/modifyForm";
 
-const BoardRoutes = () => {
+const BoardRoutes: React.FC = () => {
+  const { boardId, postId } = useParams();
+  console.log(boardId, postId);
+
   return (
     <Routes>
       <Route path="lists/:boardId/:page" element={<BoardScreen />} />
@@ -9,8 +16,8 @@ const BoardRoutes = () => {
         path="view/:boardId/:postId"
         element={<h1>보드 개인 글 조회</h1>}
       />
-      <Route path="write/:boardId" element={<h1>글 작성</h1>} />
-      <Route path="modify/:boardId/:postId" element={<h1>글 수정</h1>} />
+      <Route path="write/:boardId" element={<PostForm />} />
+      <Route path="modify/:boardId/:postId" element={<ModifiyBoard />} />
     </Routes>
   );
 };
