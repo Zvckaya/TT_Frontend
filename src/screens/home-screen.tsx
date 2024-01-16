@@ -59,15 +59,15 @@ const HomeScreen = () => {
       <MaxSlider height="300px"></MaxSlider>
       <IconMenu onClick={() => navigate("/board/lists/titto/1")}>
         <MyIcon>
-          <img src="imgs/myIcon.svg" alt="My Icon" />
+          <img src="/imgs/myIcon.svg" alt="My Icon" />
           티토찾기
         </MyIcon>
         <MyIcon onClick={() => navigate("/board/lists/qna/1")}>
-          <img src="imgs/myIcon.svg" alt="My Icon" />
+          <img src="/imgs/myIcon.svg" alt="My Icon" />
           질문하기
         </MyIcon>
         <MyIcon onClick={() => navigate("/board/lists/titto/")}>
-          <img src="imgs/myIcon.svg" alt="My Icon" />
+          <img src="/imgs/myIcon.svg" alt="My Icon" />
           티칭공간
         </MyIcon>
       </IconMenu>
