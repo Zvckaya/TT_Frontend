@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import ReactQuill from "react-quill";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -69,6 +70,7 @@ const Content = styled.div`
 `;
 
 const Submit = styled.div`
+  margin-top: 40px;
   width: 100%;
   padding: 20px 0px 10px 10px;
   display: flex;
@@ -154,7 +156,8 @@ const PostForm = () => {
       </Title>
       <Content>
         내용 <span style={{ color: "red" }}>*</span>
-        <textarea />
+        <br />
+        <ReactQuill style={{ paddingTop: "20px", height: "600px" }} />
       </Content>
       <Submit>
         <button className="cancel">취소</button>
