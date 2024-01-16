@@ -1,4 +1,5 @@
 import React from "react";
+
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -15,6 +16,6 @@ const PostForm = () => {
       <span></span>
     </Wrapper>
   );
-};
+}
 
 export default PostForm;

@@ -2,6 +2,7 @@ import styled from "styled-components";
 import MaxSlider from "../components/slider-max";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import HBoarddetail from "../components/home/board-detail";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -20,6 +21,7 @@ const MyIcon = styled.div`
   transition: transform 0.3s ease-in-out;
   &:hover {
     transform: translateY(-10px);
+    cursor: pointer;
   }
 
   img {
@@ -43,28 +45,34 @@ const BoardDetail = styled.div`
     font-weight: bold;
     display: inline-block;
   }
+
+  span:hover {
+    cursor: pointer;
+    color: #bababa;
+  }
 `;
 
 const HomeScreen = () => {
+  const navigate = useNavigate();
   return (
     <Wrapper>
       <MaxSlider height="300px"></MaxSlider>
-      <IconMenu>
+      <IconMenu onClick={() => navigate("/board/lists/titto/1")}>
         <MyIcon>
-          <img src="imgs/myIcon.svg" alt="My Icon" />
+          <img src="/imgs/myIcon.svg" alt="My Icon" />
           티토찾기
         </MyIcon>
-        <MyIcon>
-          <img src="imgs/myIcon.svg" alt="My Icon" />
+        <MyIcon onClick={() => navigate("/board/lists/qna/1")}>
+          <img src="/imgs/myIcon.svg" alt="My Icon" />
           질문하기
         </MyIcon>
-        <MyIcon>
-          <img src="imgs/myIcon.svg" alt="My Icon" />
+        <MyIcon onClick={() => navigate("/board/lists/titto/")}>
+          <img src="/imgs/myIcon.svg" alt="My Icon" />
           티칭공간
         </MyIcon>
       </IconMenu>
       <BoardWrapper>
-        <BoardDetail>
+        <BoardDetail onClick={() => navigate("/board/lists/titto/1")}>
           <span style={{ paddingBottom: "10px" }}>
             티토 찾아요
             <ArrowForwardIosIcon />
@@ -91,7 +99,7 @@ const HomeScreen = () => {
             comment={0}
           ></HBoarddetail>
         </BoardDetail>
-        <BoardDetail>
+        <BoardDetail onClick={() => navigate("/board/lists/qna/1")}>
           <span style={{ paddingBottom: "10px" }}>
             질문 있어요
             <ArrowForwardIosIcon />
@@ -99,7 +107,7 @@ const HomeScreen = () => {
           <HBoarddetail
             category={3}
             title="VS CODE 에러가 났어요 "
-            detail="이번에 처음 설치하고 실행하려는데 .... eESDADASDSADASD에러가 나요 ㅠㅠ , 어떡해 해야할까......"
+            detail="이번에 처음 설치하고 실행하려는데 .... DASD에러가 나요 ㅠㅠ , 어떡해 해야할까......"
             view={10}
             comment={1}
           ></HBoarddetail>

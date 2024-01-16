@@ -9,13 +9,16 @@ const Wrapper = styled.div`
 `;
 
 const BoardScreen = () => {
-  const [serachParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const { boardId, page } = useParams();
 
-  // Provide a default value for page in case it is undefined
   const pageNumber = page ? Number(page) : 1;
 
-  const renderBoard = (boardId: string) => {
+  const renderBoard = (boardId: string | undefined) => {
+    if (!boardId) {
+      return <div>게시판 ID가 없습니다.</div>;
+    }
+
     switch (boardId) {
       case "titto":
         return <TittoBoard id={boardId} page={pageNumber} />;
@@ -26,7 +29,7 @@ const BoardScreen = () => {
     }
   };
 
-  return <Wrapper>{renderBoard(boardId!)}</Wrapper>;
+  return <Wrapper>{renderBoard(boardId)}</Wrapper>;
 };
 
 export default BoardScreen;

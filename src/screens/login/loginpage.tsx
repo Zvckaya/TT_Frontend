@@ -102,7 +102,6 @@ const LoginPage = () => {
               <span>다음으로 로그인</span>
               <hr />
             </LoginTitle>
-
             <LoginBtnContainer>
               <button type="submit" className="btn_login_kakao">
                 <span>카카오 로그인</span>

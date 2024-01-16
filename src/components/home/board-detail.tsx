@@ -53,6 +53,7 @@ const BoardWrapper = styled.div`
     font-size: 0.8em;
     padding-top: 10px;
     padding-bottom: 5px;
+    color: #4d4d4d;
   }
   span {
     display: inline-block;
