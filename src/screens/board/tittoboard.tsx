@@ -3,7 +3,7 @@ import MaxSlider from "../../components/slider-max";
 import SearchIcon from "@mui/icons-material/Search";
 import TittoTitle from "../../components/board/title-titto";
 import NumberSelector from "../../components/board/number-selector";
-import CategorySelector from "../../components/board/category-selector";
+import TittoCategory from "../../components/board/titto-category";
 
 type boardUrl = {
   id: string;
@@ -44,6 +44,10 @@ const SearchDiv = styled.div`
     outline: none;
     color: black;
   }
+  input:focus::placeholder {
+    opacity: 0;
+  }
+
   button {
     vertical-align: middle;
     border: none;
@@ -166,11 +170,11 @@ const TittoBoard = ({ id, page }: boardUrl) => {
               </tbody>
             </table>
           </PostWrapper>
-          <NumberSelector id={id} page={3} pages={32} />
+          <NumberSelector id={id} page={page} pages={32} />
         </MainDiv>
 
         <CategoryDiv>
-          <CategorySelector></CategorySelector>
+          <TittoCategory />
         </CategoryDiv>
       </BoardWrapper>
     </Wrapper>

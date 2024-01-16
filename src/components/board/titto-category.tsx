@@ -27,9 +27,13 @@ const CategorySelect = styled.div`
   padding: 10px;
   color: #bababa;
   font-weight: bold;
+  &:hover {
+    cursor: pointer;
+    color: black;
+  }
 `;
 
-const CategorySelector = () => {
+const TittoCategory = () => {
   return (
     <CategoryWrapper>
       <CategoryTitle>전체보기</CategoryTitle>
@@ -41,4 +45,4 @@ const CategorySelector = () => {
   );
 };
 
-export default CategorySelector;
+export default TittoCategory;
