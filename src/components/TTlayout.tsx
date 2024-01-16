@@ -29,12 +29,18 @@ const NavLi = styled.li`
   align-items: center;
   position: relative;
 
+  &:first-child {
+    margin-left: 0;
+    list-style: none;
+  }
+
   a {
     text-decoration: none;
     color: black;
     font-weight: bold;
     font-size: 16px;
     position: relative;
+
     &:after {
       content: "";
       display: block;
@@ -47,16 +53,14 @@ const NavLi = styled.li`
     }
   }
 
-  &:hover a:after {
+  &:not(:first-child):hover a:after {
     width: 100%;
   }
 `;
-
 const NavLogo = styled.h1`
   font-size: 32px;
   font-weight: bold;
   color: #3e68ff;
-  margin: 0 20px;
 `;
 
 const NavProflie = styled.div`
@@ -64,8 +68,8 @@ const NavProflie = styled.div`
   align-items: center;
   gap: 10px;
   cursor: pointer;
-  margin-left: 420px;
   position: relative;
+  margin-left: auto;
 `;
 
 const NavImg = styled.img`
@@ -170,36 +174,32 @@ const TTlayout = () => {
           <NavLi>
             <Link to="/about">스터디 관리해요</Link>
           </NavLi>
-          <NavLi>
-            <NavProflie
-              className="nav-profile"
-              onClick={() => setPopupOpen(false)}
-            >
-              <MailOutlineIcon
-                style={{ fontSize: "30px" }}
-                onClick={() => navigate("/message")}
-              />
-              <NavImg src="/imgs/UserProfile.png" alt="User-Profile" />
 
-              <MenuIcon
-                style={{ fontSize: "30px" }}
-                onClick={(e: React.MouseEvent<SVGSVGElement>) => togglePopup(e)}
-              />
-              {isPopupOpen && (
-                <PopupContainer>
-                  <PopupContent>
-                    <PopupProfile>농부왕</PopupProfile>
-                    <PopupMyPage onClick={() => navigate("/mypage")}>
-                      마이페이지
-                    </PopupMyPage>
-                    <PopupLogout onClick={() => navigate("/account/sign_in")}>
-                      로그아웃
-                    </PopupLogout>
-                  </PopupContent>
-                </PopupContainer>
-              )}
-            </NavProflie>
-          </NavLi>
+          <NavProflie>
+            <MailOutlineIcon
+              style={{ fontSize: "30px" }}
+              onClick={() => navigate("/message")}
+            />
+            <NavImg src="/imgs/UserProfile.png" alt="User-Profile" />
+
+            <MenuIcon
+              style={{ fontSize: "30px" }}
+              onClick={(e: React.MouseEvent<SVGSVGElement>) => togglePopup(e)}
+            />
+            {isPopupOpen && (
+              <PopupContainer>
+                <PopupContent>
+                  <PopupProfile>농부왕</PopupProfile>
+                  <PopupMyPage onClick={() => navigate("/mypage")}>
+                    마이페이지
+                  </PopupMyPage>
+                  <PopupLogout onClick={() => navigate("/account/sign_in")}>
+                    로그아웃
+                  </PopupLogout>
+                </PopupContent>
+              </PopupContainer>
+            )}
+          </NavProflie>
         </NavUl>
       </NavWrapper>
       <Container>
