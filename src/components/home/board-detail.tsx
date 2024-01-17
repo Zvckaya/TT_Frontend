@@ -40,17 +40,17 @@ const BoardWrapper = styled.div`
   padding-bottom: 10px;
 
   .category {
-    font-size: 1em;
+    font-size: 15px;
     font-weight: bold;
     padding-bottom: 10px;
   }
   .title {
     color: black;
-    font-size: 1.1em;
+    font-size: 18px;
   }
   .detail {
     font-weight: 100;
-    font-size: 0.8em;
+    font-size: 13px;
     padding-top: 10px;
     padding-bottom: 5px;
     color: #4d4d4d;
