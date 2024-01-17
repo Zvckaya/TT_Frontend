@@ -11,7 +11,6 @@ const Wrapper = styled.div`
 const BoardScreen = () => {
   const [searchParams] = useSearchParams();
   const { boardId, page } = useParams();
-
   const pageNumber = page ? Number(page) : 1;
 
   const renderBoard = (boardId: string | undefined) => {
