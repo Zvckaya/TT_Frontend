@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import ReactQuill from "react-quill";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
+import QuilllEditor from "../../components/board/QuillEditor";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -124,8 +125,9 @@ const CategorySelect = (lists: string[]) => {
 };
 
 const PostForm = () => {
-  const { boardId = "default" } = useParams();
+  const { boardId = "default", postId } = useParams();
   const [bType, setBType] = useState<string>("");
+  const quillRef = useRef<ReactQuill | null>(null);
   const tittoCategory = ["멘토구해요", "멘티구해요", "어울려요"];
   const qnaCategory = [
     "인문융합콘텐츠",
@@ -137,9 +139,42 @@ const PostForm = () => {
     "전체보기",
   ];
 
+  console.log(postId);
+  const [title, setTitles] = useState("");
+  const [htmlContent, setContents] = useState("");
+
+  const HandleSubmit = async () => {
+    // 여기에서 api로 결정
+  };
+
+  const modules = useMemo(() => {
+    return {
+      toolbar: {
+        container: [
+          ["image"],
+          [{ header: [1, 2, 3, 4, 5, false] }],
+          ["bold", "underline"],
+        ],
+      },
+    };
+  }, []);
+
+  const imageHandler = () => {
+    if (quillRef.current) {
+      const input = document.createElement("input");
+      input.setAttribute("type", "file");
+      input.setAttribute("accept", "image/*");
+      input.click();
+    }
+  };
+
   useEffect(() => {
     setBType(BoardType(boardId));
   }, [boardId]);
+
+  useEffect(() => {
+    console.log(htmlContent);
+  }, [htmlContent]);
 
   return (
     <Wrapper>
@@ -151,17 +186,28 @@ const PostForm = () => {
         </select>
       </Category>
       <Title>
-        제목 <span style={{ color: "red" }}>*</span>
-        <input type="text" />
+        제목 <span style={{ color: "red" }}>* </span>
+        <input
+          type="text"
+          onChange={(e) => {
+            setTitles(e.target.value);
+          }}
+        />
       </Title>
       <Content>
         내용 <span style={{ color: "red" }}>*</span>
         <br />
-        <ReactQuill style={{ paddingTop: "20px", height: "600px" }} />
+        <QuilllEditor
+          quillRef={quillRef}
+          htmlContent={htmlContent}
+          setHtmlContent={setContents}
+        />
       </Content>
       <Submit>
         <button className="cancel">취소</button>
-        <button className="submit">작성</button>
+        <button className="submit" onClick={HandleSubmit}>
+          {postId ? "수정" : "작성"}
+        </button>
       </Submit>
     </Wrapper>
   );
