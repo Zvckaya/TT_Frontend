@@ -20,7 +20,6 @@ const NavUl = styled.ul`
   margin: 0;
   display: flex;
   width: 1100px;
-  border: 1px solid red;
 `;
 
 const NavLi = styled.li`
@@ -180,7 +179,11 @@ const TTlayout = () => {
               style={{ fontSize: "30px" }}
               onClick={() => navigate("/message")}
             />
-            <NavImg src="/imgs/UserProfile.png" alt="User-Profile" />
+            <NavImg
+              src="/imgs/UserProfile.png"
+              alt="User-Profile"
+              onClick={() => navigate("/mypage/users/:userId/profile")}
+            />
 
             <MenuIcon
               style={{ fontSize: "30px" }}
