@@ -4,6 +4,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import TittoTitle from "../../components/board/title-titto";
 import NumberSelector from "../../components/board/number-selector";
 import TittoCategory from "../../components/board/titto-category";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 type boardUrl = {
   id: string;
@@ -96,7 +97,30 @@ const CategoryDiv = styled.div`
   width: 28%;
 `;
 
+const SubmitWrapper = styled.div`
+  width: 100%;
+  margin-top: 10px;
+  justify-content: right;
+  display: flex;
+  .btn {
+    width: 100px;
+    height: 35px;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 2em;
+    border: none;
+    background-color: #3e68ff;
+    color: white;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+    margin-left: 10px;
+  }
+`;
+
 const TittoBoard = ({ id, page }: boardUrl) => {
+  const { boardId } = useParams();
+  const navigate = useNavigate();
   const pages = 32;
   return (
     <Wrapper>
@@ -131,6 +155,7 @@ const TittoBoard = ({ id, page }: boardUrl) => {
                   author="동큔큔"
                   date="01/01"
                 />
+
                 <TittoTitle
                   search={false}
                   title="멘티 선착순 1명"
@@ -170,6 +195,14 @@ const TittoBoard = ({ id, page }: boardUrl) => {
               </tbody>
             </table>
           </PostWrapper>
+          <SubmitWrapper>
+            <div
+              className="btn"
+              onClick={() => navigate("/board/write/" + boardId)}
+            >
+              글쓰기
+            </div>
+          </SubmitWrapper>
           <NumberSelector id={id} page={page} pages={32} />
         </MainDiv>
 

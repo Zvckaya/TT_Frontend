@@ -70,6 +70,23 @@ const Content = styled.div`
   }
 `;
 
+const Point = styled.div`
+  width: 100%;
+  padding: 20px 0px 10px 10px;
+  font-size: 20px;
+  select {
+    margin-top: 10px;
+    display: block;
+    width: 30%;
+    border: 1px solid #bababa;
+    border-radius: 5px;
+    background-color: #fbfbfd;
+    padding: 10px;
+    font-size: 20px;
+    outline: none;
+  }
+`;
+
 const Submit = styled.div`
   margin-top: 40px;
   width: 100%;
@@ -138,6 +155,7 @@ const PostForm = () => {
     "소프트웨어 융합",
     "전체보기",
   ];
+  const [point, setPoint] = useState(0);
 
   console.log(postId);
   const [title, setTitles] = useState("");
@@ -194,6 +212,18 @@ const PostForm = () => {
           }}
         />
       </Title>
+      {boardId === "qna" ? (
+        <Point>
+          내공 <span style={{ color: "red" }}>*</span>
+          <select>
+            {Array.from({ length: 11 }, (_, i) => i * 10).map((num) => {
+              return <option key={num}>{num}</option>;
+            })}
+          </select>
+        </Point>
+      ) : (
+        <></>
+      )}
       <Content>
         내용 <span style={{ color: "red" }}>*</span>
         <br />
