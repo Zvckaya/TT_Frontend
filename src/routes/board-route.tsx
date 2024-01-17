@@ -4,6 +4,7 @@ import { Routes, Route, useParams } from "react-router-dom";
 import BoardScreen from "../screens/board-screen";
 import PostForm from "../screens/board/postForm";
 import PostView from "../screens/board/postView";
+import NotFound from "../screens/notfound";
 
 const BoardRoutes: React.FC = () => {
   return (
@@ -12,6 +13,7 @@ const BoardRoutes: React.FC = () => {
       <Route path="view/:boardId/:postId" element={<PostView />} />
       <Route path="write/:boardId" element={<PostForm />} />
       <Route path="modify/:boardId/:postId" element={<PostForm />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };
