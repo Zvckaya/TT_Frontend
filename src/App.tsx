@@ -11,6 +11,7 @@ import HomeScreen from "./screens/home-screen";
 import LoginPage from "./screens/login/loginpage";
 import SignUpPage from "./screens/login/signuppage";
 import WelcomePage from "./screens/login/welcomepage";
+import NotFound from "./screens/notfound";
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -40,6 +41,7 @@ const router = createBrowserRouter([
       { path: "message/*", element: <MessageRoutes /> },
       { path: "board/*", element: <BoardRoutes /> },
     ],
+    errorElement: <NotFound />,
   },
   {
     path: "/account",

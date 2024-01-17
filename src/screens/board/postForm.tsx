@@ -217,7 +217,11 @@ const PostForm = () => {
           내공 <span style={{ color: "red" }}>*</span>
           <select>
             {Array.from({ length: 11 }, (_, i) => i * 10).map((num) => {
-              return <option key={num}>{num}</option>;
+              return (
+                <option key={num} value={num}>
+                  {num}
+                </option>
+              );
             })}
           </select>
         </Point>
