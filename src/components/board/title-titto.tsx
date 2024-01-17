@@ -1,3 +1,4 @@
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
 type titleType = {
@@ -41,8 +42,15 @@ const TitleWrapper = styled.tr`
 `;
 
 const TittoTitle = ({ search, title, author, date }: titleType) => {
+  const { boardId } = useParams();
+  console.log(boardId);
+  const navigate = useNavigate();
   return (
-    <TitleWrapper>
+    <TitleWrapper
+      onClick={() => {
+        navigate("/board/view/" + boardId + "/12321");
+      }}
+    >
       <td>
         <div className={search ? "search" : "end"}>
           {search ? "모집중" : "완료"}

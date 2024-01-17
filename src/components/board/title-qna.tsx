@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import SmsIcon from "@mui/icons-material/Sms";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -95,8 +96,15 @@ const QnaTitle = ({
   view,
   comment,
 }: QnaTitleProps) => {
+  const { boardId } = useParams();
+  console.log(boardId);
+  const navigate = useNavigate();
   return (
-    <Wrapper>
+    <Wrapper
+      onClick={() => {
+        navigate("/board/view/" + boardId + "/12321");
+      }}
+    >
       <MainTitle>
         <div style={{ display: "flex", alignItems: "center" }}>
           <SolveDiv className={solve ? "solve" : "not-solve"}>

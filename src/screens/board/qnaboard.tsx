@@ -2,6 +2,7 @@ import styled from "styled-components";
 import QnaCategoty from "../../components/board/qna-category";
 import QnaTitle from "../../components/board/title-qna";
 import NumberSelector from "../../components/board/number-selector";
+import { useNavigate, useParams } from "react-router-dom";
 
 export type boardUrl = {
   id: string;
@@ -90,8 +91,31 @@ const SearchDiv = styled.div`
 const PostWrapper = styled.div`
   width: 100%;
 `;
+const SubmitWrapper = styled.div`
+  width: 100%;
+  margin-top: 10px;
+  justify-content: right;
+  display: flex;
+  .btn {
+    width: 100px;
+    height: 35px;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 2em;
+    border: none;
+    background-color: #3e68ff;
+    color: white;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+    margin-left: 10px;
+  }
+`;
 
 const QnaBoard = ({ id, page }: boardUrl) => {
+  const { boardId } = useParams();
+  const navigate = useNavigate();
+
   return (
     <Wrapper>
       <BoardWrapper>
@@ -167,6 +191,14 @@ const QnaBoard = ({ id, page }: boardUrl) => {
               comment={0}
             />
           </PostWrapper>
+          <SubmitWrapper>
+            <div
+              className="btn"
+              onClick={() => navigate("/board/write/" + boardId)}
+            >
+              글쓰기
+            </div>
+          </SubmitWrapper>
           <NumberSelector id={id} page={page} pages={7} />
         </MainDiv>
 
