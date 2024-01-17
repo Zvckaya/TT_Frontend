@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const LoginPageWrapper = styled.div`
@@ -88,6 +89,7 @@ const LoginBtnContainer = styled.div`
 `;
 
 const LoginPage = () => {
+  const navigate = useNavigate();
   return (
     <>
       <LoginPageWrapper>
@@ -103,10 +105,18 @@ const LoginPage = () => {
               <hr />
             </LoginTitle>
             <LoginBtnContainer>
-              <button type="submit" className="btn_login_kakao">
+              <button
+                type="submit"
+                className="btn_login_kakao"
+                onClick={() => navigate("/account/sign_up/:userId")}
+              >
                 <span>카카오 로그인</span>
               </button>
-              <button type="submit" className="btn_login_naver">
+              <button
+                type="submit"
+                className="btn_login_naver"
+                onClick={() => navigate("/account/sign_up/:userId")}
+              >
                 <span>네이버 로그인</span>
               </button>
             </LoginBtnContainer>
