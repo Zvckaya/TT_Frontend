@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import MyPageCategory from "../../components/board/mypage-category";
 import AccountManagementContent from "./accountmanagement";
-import ProfileManagementContent from "./profilesmanage ";
+import ProfileManagementContent from "./profilesmanagement";
 import WirtePostContent from "./writepost";
 
 const MyProfile = () => {

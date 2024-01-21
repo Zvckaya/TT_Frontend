@@ -1,5 +1,11 @@
+import NotFound from "../notfound";
+
 const WirtePostContent = () => {
-  return <div>3</div>;
+  return (
+    <>
+      <NotFound />
+    </>
+  );
 };
 
 export default WirtePostContent;
