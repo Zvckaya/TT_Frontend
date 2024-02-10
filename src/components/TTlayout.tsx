@@ -196,7 +196,7 @@ const TTlayout = () => {
                   <PopupMyPage onClick={() => navigate("/mypage")}>
                     마이페이지
                   </PopupMyPage>
-                  <PopupLogout onClick={() => navigate("/account/sign_in")}>
+                  <PopupLogout onClick={() => navigate("/login/sign_in")}>
                     로그아웃
                   </PopupLogout>
                 </PopupContent>
