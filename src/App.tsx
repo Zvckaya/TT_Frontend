@@ -12,6 +12,9 @@ import LoginPage from "./screens/login/loginpage";
 import SignUpPage from "./screens/login/signuppage";
 import WelcomePage from "./screens/login/welcomepage";
 import NotFound from "./screens/notfound";
+import axios from "axios";
+
+axios.defaults.withCredentials = true;
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -44,12 +47,13 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
   },
   {
-    path: "/account",
+    path: "/login",
     element: <AccountRoute />,
     children: [
       { path: "sign_in", element: <LoginPage /> },
       { path: "sign_up/:userId", element: <SignUpPage /> },
       { path: "welcome", element: <WelcomePage /> },
+      { path: "oauth2/*", element: <LoginPage /> },
     ],
   },
 ]);

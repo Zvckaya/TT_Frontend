@@ -1,4 +1,6 @@
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useEffect } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const LoginPageWrapper = styled.div`
@@ -90,6 +92,70 @@ const LoginBtnContainer = styled.div`
 
 const LoginPage = () => {
   const navigate = useNavigate();
+
+  const KAKAO_AUTH_URL =
+    "https://kauth.kakao.com/oauth/authorize?client_id=07fae5134b01bb2d04d6325ce2e54ecd&redirect_uri=http://localhost:8080/login/oauth2/code/kakao&response_type=code";
+  //추후에 .env 파일로 옮기기
+  const handleKakaoLogin = () => {
+    try {
+      window.location.href = KAKAO_AUTH_URL;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleKakaoCallback = async () => {
+    const code = new URLSearchParams(window.location.search).get("code");
+    console.log("코드는:", code);
+    try {
+      const res = await axios.get("/api/oauth/kakao", {
+        params: {
+          code: code,
+        },
+      });
+      console.log("카카오 로그인 성공");
+      const kakaoAccessToken = res.data.kakaoAccessToken;
+      const kakaoRefreshToken = res.data.kakaoRefreshToken;
+      console.log(
+        "엑세스 토큰:",
+        kakaoAccessToken,
+        "리프레시 토큰:",
+        kakaoRefreshToken
+      );
+      const dataraw = {
+        kakaoAccessToken: kakaoAccessToken,
+      };
+      const raw = JSON.stringify(dataraw);
+
+      const loginRes = await axios.post("/api/oauth/kakao/login", raw, {
+        headers: {
+          Authorization: `Bearer ${kakaoAccessToken}`,
+          "Content-Type": "application/json;charset=UTF-8",
+        },
+      });
+      if (loginRes.status === 200) {
+        console.log("로그인 성공");
+        localStorage.setItem("accessToken", loginRes.data.accessToken);
+        localStorage.setItem("refreshToken", loginRes.data.refreshToken);
+        navigate("/");
+        //로그인 성공시 홈으로 이동
+      }
+    } catch (err) {
+      console.log(err);
+      console.log("카카오 로그인 실패");
+    }
+  };
+
+  useEffect(() => {
+    if (window.location.pathname === "/login/oauth2/code/kakao") {
+      handleKakaoCallback();
+    } else if (window.location.pathname === "/login/oauth2/code/naver") {
+      //네이버 로그인 구현
+    } else {
+      console.log("그냥 로그인.");
+    }
+  }, []);
+
   return (
     <>
       <LoginPageWrapper>
@@ -106,9 +172,9 @@ const LoginPage = () => {
             </LoginTitle>
             <LoginBtnContainer>
               <button
-                type="submit"
+                type="button"
                 className="btn_login_kakao"
-                onClick={() => navigate("/account/sign_up/:userId")}
+                onClick={handleKakaoLogin}
               >
                 <span>카카오 로그인</span>
               </button>
