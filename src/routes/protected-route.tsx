@@ -23,7 +23,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   });
 
   if (isLogin) {
-    return <Navigate to="/account/sign_in"></Navigate>;
+    // return <Navigate to="/login/sign_up/:userId"></Navigate>;
   }
   return <>{children}</>;
 };

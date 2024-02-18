@@ -1,16 +1,9 @@
-import { useNavigate, useParams } from "react-router-dom";
+import React from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-
-type titleType = {
-  search: boolean;
-  title: string;
-  author: string;
-  date: string;
-};
 
 const TitleWrapper = styled.tr`
   height: 43px;
-
   border-bottom: 1px solid #bababa;
 
   &:hover {
@@ -41,14 +34,22 @@ const TitleWrapper = styled.tr`
   }
 `;
 
-const TittoTitle = ({ search, title, author, date }: titleType) => {
+export type TitleType = {
+  search: boolean;
+  title: string;
+  author: string;
+  date: string;
+  postId: string;
+};
+
+const TittoTitle = ({ search, title, author, date, postId }: TitleType) => {
   const { boardId } = useParams();
-  console.log(boardId);
   const navigate = useNavigate();
+
   return (
     <TitleWrapper
       onClick={() => {
-        navigate("/board/view/" + boardId + "/12321");
+        navigate(`/board/view/${boardId}/${postId}`);
       }}
     >
       <td>
