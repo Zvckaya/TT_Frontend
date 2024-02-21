@@ -33,19 +33,22 @@ const UserProfile = () => {
           </UserProfileMainIntroduceContainer>
 
           <UserProfileMainLevelContainer>
-            <p>다음 레벨까지</p>
-            <h1>210내공남았어요.</h1>
-            <Progress>
-              <Dealt />
-            </Progress>
-            <p>답변한 글 수</p>
-            <h1>총 17개 답변했어요.</h1>
-
-            <p>채택된 글 수</p>
-            <h1>총 7개 채택됐어요.</h1>
-
+            <div>
+              <p>다음 레벨까지</p>
+              <h1>210내공남았어요.</h1>
+              <Progress>
+                <Dealt />
+              </Progress>
+              <p>답변한 글 수</p>
+              <h1>총 17개 답변했어요.</h1>
+              <p>채택된 글 수</p>
+              <h1>총 7개 채택됐어요.</h1>
+            </div>
             <p>채택률</p>
-            <h1>53%</h1>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <h1>53%</h1>
+              <div className="btn">쪽지 보내기</div>
+            </div>
           </UserProfileMainLevelContainer>
         </UserProfileMainContainer>
 
@@ -218,6 +221,20 @@ const UserProfileMainLevelContainer = styled.div`
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 40px;
+  }
+  .btn {
+    width: 100px;
+    height: 35px;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 2em;
+    border: none;
+    background-color: #3e68ff;
+    color: white;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+    margin-left: 10px;
   }
 `;
 const Progress = styled.div`

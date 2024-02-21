@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import QuillEditor from "../../components/board/QuillEditor";
 import ReactQuill from "react-quill";
@@ -124,7 +124,9 @@ const Submit = styled.div`
     color: white;
   }
 `;
+
 const PostForm = () => {
+  const navigate = useNavigate();
   const { boardId = "default", postId } = useParams();
   const [bType, setBType] = useState<string>("");
   const quillRef = useRef<ReactQuill | null>(null);
@@ -154,8 +156,9 @@ const PostForm = () => {
     "소프트웨어 융합",
     "전체보기",
   ];
-  const [point, setPoint] = useState(0);
+  // const [point, setPoint] = useState(0);
   const [title, setTitles] = useState("");
+  const [authorProfile, setProfiles] = useState("");
   const [htmlContent, setContents] = useState("");
 
   const handleSubmit = async () => {
@@ -166,6 +169,7 @@ const PostForm = () => {
       title: title,
       content: htmlContent,
       status: "RECRUITING",
+      profile: authorProfile,
     };
 
     try {
@@ -177,6 +181,7 @@ const PostForm = () => {
       });
 
       console.log("Success:", response.data);
+      navigate(`/board/lists/${boardId}/1`);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -240,7 +245,14 @@ const PostForm = () => {
         />
       </Content>
       <Submit>
-        <button className="cancel">취소</button>
+        <button
+          className="cancel"
+          onClick={() => {
+            history.back();
+          }}
+        >
+          취소
+        </button>
         <button className="submit" onClick={handleSubmit}>
           {postId ? "수정" : "작성"}
         </button>

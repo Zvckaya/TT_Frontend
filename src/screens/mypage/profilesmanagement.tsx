@@ -48,7 +48,7 @@ const ProfileManagementContent = () => {
       <ProfileBadgeDiv>
         <div className="BadgeContainer">
           <p className="subname">획득 뱃지</p>
-          <img src="/imgs/UserProfile.png" alt="User-Profile" />
+          <img src="/imgs/bg.png" alt="User-Profile" />
           <img src="/imgs/UserProfile.png" alt="User-Profile" />
         </div>
       </ProfileBadgeDiv>

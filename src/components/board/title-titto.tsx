@@ -45,7 +45,6 @@ export type TitleType = {
 const TittoTitle = ({ search, title, author, date, postId }: TitleType) => {
   const { boardId } = useParams();
   const navigate = useNavigate();
-
   return (
     <TitleWrapper
       onClick={() => {
@@ -59,7 +58,7 @@ const TittoTitle = ({ search, title, author, date, postId }: TitleType) => {
       </td>
       <td>{title}</td>
       <td>{author}</td>
-      <td>{date}</td>
+      <td style={{ fontSize: "9px" }}>{date}</td>
     </TitleWrapper>
   );
 };

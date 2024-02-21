@@ -5,8 +5,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import TittoTitle from "../../components/board/title-titto";
 import NumberSelector from "../../components/board/number-selector";
 import TittoCategory from "../../components/board/titto-category";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import axios from "axios"; // Axios import
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 
 type BoardUrl = {
   id: string;
@@ -134,18 +134,30 @@ const TittoBoard = ({ id, page }: BoardUrl) => {
   const navigate = useNavigate();
   const [posts, setPosts] = useState<Post[]>([]);
   const accessToken = localStorage.getItem("accessToken");
+
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const response = await axios.get(
-          `http://titto.duckdns.org/matching-board/posts?page=${page}&size=5&sort=asc`,
+          `http://titto.duckdns.org/matching-board/posts?page=${
+            page - 1
+          }&size=10&sort=asc`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
           }
         );
-        setPosts(response.data.content);
+
+        console.log("Success:", response.data);
+        const formattedPosts = response.data.content.map((post: Post) => ({
+          ...post,
+
+          createDate: new Date(
+            new Date(post.createDate).getTime()
+          ).toLocaleString(),
+        }));
+        setPosts(formattedPosts);
       } catch (error) {
         console.error(error);
       }
