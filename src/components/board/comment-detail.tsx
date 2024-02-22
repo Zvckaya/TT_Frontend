@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import ImageUploadForm from "./image";
 import { UserInfo } from "../../screens/board/postView";
 
-type CommentInfo = {
+export type CommentInfo = {
   profile: string;
   lv: number;
   id: string;
@@ -88,10 +87,6 @@ const CommentDetail = ({ postId }: { postId: string }) => {
     email: "",
   }); // 로그인 유저 정보
 
-  // 화면 강제 갱신을 위한 상태 추가
-  const [, updateState] = useState();
-  const forceUpdate = () => updateState(undefined);
-
   useEffect(() => {
     fetchComments();
     loadUserData();
@@ -119,6 +114,7 @@ const CommentDetail = ({ postId }: { postId: string }) => {
         console.error("Error fetching user data:", error);
       });
   };
+
   const fetchComments = async () => {
     try {
       const response = await axios.get(
@@ -137,6 +133,7 @@ const CommentDetail = ({ postId }: { postId: string }) => {
       console.error("Error fetching comments:", error);
     }
   };
+
   const handleDeleteComment = (reviewIdToDelete: number) => {
     const confirmDelete = window.confirm("댓글을 삭제하시겠습니까?");
     if (confirmDelete) {
@@ -158,7 +155,7 @@ const CommentDetail = ({ postId }: { postId: string }) => {
               (comment) => comment.reviewId !== reviewIdToDelete
             )
           );
-          forceUpdate();
+          window.location.reload(); // 일단..
         })
         .catch((error) => {
           console.error("댓글 삭제 중 에러가 발생했습니다:", error);

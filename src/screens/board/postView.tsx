@@ -3,7 +3,9 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import SmsIcon from "@mui/icons-material/Sms";
-import CommentDetail from "../../components/board/comment-detail";
+import CommentDetail, {
+  CommentInfo,
+} from "../../components/board/comment-detail";
 import ReactQuill from "react-quill";
 import axios from "axios";
 
@@ -85,6 +87,15 @@ const ProfileWrapper = styled.div`
     font-size: 15px;
     font-weight: bold;
     margin-left: 10px;
+  }
+  .btnfix {
+    background-color: #3e68ff;
+    color: white;
+    cursor: pointer;
+
+    &:active {
+      background-color: #8fa3ea;
+    }
   }
 
   .modify {
@@ -171,21 +182,16 @@ const SubmitWrapper = styled.div`
 `;
 
 const PostView = () => {
-  // 상태 변수들 정의
   const [title, setTitles] = useState("");
   const [detail, setDetail] = useState("");
   const [category, setCategory] = useState("");
-  // const [name, setName] = useState("");
+  const [status, setStatus] = useState("");
   const [date, setDate] = useState("");
   const { boardId = "default", postId } = useParams();
   const [view, setView] = useState(13);
   const [comment, setComment] = useState();
   const accessToken = localStorage.getItem("accessToken");
-
   const [reviewContent, setReviewContent] = useState("");
-
-  const [reviews, setReviews] = useState([]);
-
   const [userMyfo, setMyInfo] = useState<UserInfo>({
     name: "",
     profileImg: "",
@@ -201,6 +207,29 @@ const PostView = () => {
     id: "",
     email: "",
   }); // 글 유저 정보
+
+  interface statusMapping {
+    RECRUITING: string;
+    RECRUITMENT_COMPLETED: string;
+  }
+  const statusMapping: statusMapping = {
+    RECRUITING: "모집 중",
+    RECRUITMENT_COMPLETED: "완료",
+  };
+
+  interface CategoryMapping {
+    STUDY: string;
+    MENTOR: string;
+    MENTEE: string;
+    UHWOOLLEAM: string;
+  }
+
+  const categoryMapping: CategoryMapping = {
+    STUDY: "스터디구해요",
+    MENTOR: "멘토찾아요",
+    MENTEE: "멘티찾아요",
+    UHWOOLLEAM: "어울림찾아요",
+  };
 
   const navigate = useNavigate();
 
@@ -255,6 +284,7 @@ const PostView = () => {
         setDate(new Date(data.updateDate).toLocaleString("ko-KR"));
         setView(data.viewCount);
         setComment(data.reviewCount);
+        setStatus(data.status);
         setWriteInfo({
           name: data.authorNickName,
           profileImg: data.profile,
@@ -299,6 +329,8 @@ const PostView = () => {
         );
         loadPostData();
         setReviewContent("");
+
+        window.location.reload(); // 일단..
       })
       .catch((error) => {
         // 요청이 실패한 경우
@@ -333,41 +365,44 @@ const PostView = () => {
     }
   };
 
-  // const handleModifyPost = () => {
-  //   const accessToken = localStorage.getItem("accessToken");
-  //   const matchingPostId = postId;
-  //   const requestBody = {
-  //     category: "",
-  //     title: "",
-  //     content: "",
-  //     status: "RECRUITING",
-  //   };
+  const handleToggleStatus = () => {
+    const newStatus =
+      status === "RECRUITING" ? "RECRUITMENT_COMPLETED" : "RECRUITING";
+    setStatus(newStatus);
 
-  //   axios
-  //     .put(
-  //       `http://titto.duckdns.org/matching-post/update/${matchingPostId}`,
-  //       requestBody,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${accessToken}`,
-  //           Accept: "application/json;charset=UTF-8",
-  //           "Content-Type": "application/json;charset=UTF-8",
-  //         },
-  //       }
-  //     )
-  //     .then((response) => {
-  //       console.log("게시글이 성공적으로 수정되었습니다.");
-  //       window.location.reload(); // 페이지 리로드
-  //     })
-  //     .catch((error) => {
-  //       console.error("게시글 수정 중 에러가 발생했습니다:", error);
-  //     });
-  // };
+    axios
+      .put(
+        `http://titto.duckdns.org/matching-post/update/${postId}`,
+        {
+          category: category,
+          title: title,
+          content: reviewContent,
+          status: newStatus,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            Accept: "application/json",
+            "Content-Type": "application/json;charset=UTF-8",
+          },
+        }
+      )
+      .then((response) => {
+        console.log("상태가 성공적으로 업데이트되었습니다.");
+        console.log(response.data); // 서버 응답 확인
+      })
+      .catch((error) => {
+        console.error("상태 업데이트 중 에러가 발생했습니다:", error);
+      });
+  };
+
   return (
     <Wrapper>
       {/* 카테고리 표시 */}
       <CategoryWrapper>
-        <div className="categoryBox">{category}</div>
+        <div className="categoryBox">
+          {categoryMapping[category as keyof CategoryMapping]}
+        </div>
       </CategoryWrapper>
       {/* 제목 표시 */}
       <TitleWrapper>{title}</TitleWrapper>
@@ -388,6 +423,9 @@ const PostView = () => {
             userWriteInfo.name &&
             userMyfo.name === userWriteInfo.name && (
               <div>
+                <button className="btnfix" onClick={handleToggleStatus}>
+                  {statusMapping[status as keyof statusMapping]}
+                </button>
                 <button
                   className="modify"
                   onClick={() => navigate(`/board/write/titto/${postId}`)} // 수정 폼을 따로 만들어야 되나?

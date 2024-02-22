@@ -23,26 +23,26 @@ const TitleWrapper = styled.tr`
     background-color: #8fa3ea;
     padding: 10px;
     color: white;
-    font-size: 13px;
+    font-size: 12px;
   }
   .end {
     border-radius: 5px;
     background-color: #3e68ff;
     color: white;
     padding: 10px;
-    font-size: 13px;
+    font-size: 12px;
   }
 `;
 
 export type TitleType = {
-  search: boolean;
   title: string;
   author: string;
   date: string;
   postId: string;
+  status: string; // 상태 값 추가
 };
 
-const TittoTitle = ({ search, title, author, date, postId }: TitleType) => {
+const TittoTitle = ({ title, author, date, postId, status }: TitleType) => {
   const { boardId } = useParams();
   const navigate = useNavigate();
   return (
@@ -52,8 +52,8 @@ const TittoTitle = ({ search, title, author, date, postId }: TitleType) => {
       }}
     >
       <td>
-        <div className={search ? "search" : "end"}>
-          {search ? "모집중" : "완료"}
+        <div className={status === "RECRUITING" ? "search" : "end"}>
+          {status === "RECRUITING" ? "모집중" : "완료"}
         </div>
       </td>
       <td>{title}</td>

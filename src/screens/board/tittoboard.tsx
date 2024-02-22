@@ -127,6 +127,7 @@ type Post = {
     nickname: string;
   };
   createDate: string;
+  status: string;
 };
 
 const TittoBoard = ({ id, page }: BoardUrl) => {
@@ -195,8 +196,8 @@ const TittoBoard = ({ id, page }: BoardUrl) => {
               <tbody>
                 {posts.map((post) => (
                   <TittoTitle
+                    status={post.status}
                     key={post.matchingPostId}
-                    search={false}
                     title={post.title}
                     author={post.user.nickname}
                     date={post.createDate}
