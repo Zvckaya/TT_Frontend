@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
+import ImageUploadForm from "./image";
+import { UserInfo } from "../../screens/board/postView";
 
 type CommentInfo = {
-  profileImg: string;
+  profile: string;
   lv: number;
   id: string;
   reviewId: number;
@@ -78,38 +80,65 @@ const CommentDetail = ({ postId }: { postId: string }) => {
   const [comments, setComments] = useState<CommentInfo[]>([]);
   const accessToken = localStorage.getItem("accessToken");
 
+  const [userMyfo, setMyInfo] = useState<UserInfo>({
+    name: "",
+    profileImg: "",
+    lv: 1,
+    id: "",
+    email: "",
+  }); // 로그인 유저 정보
+
   // 화면 강제 갱신을 위한 상태 추가
   const [, updateState] = useState();
   const forceUpdate = () => updateState(undefined);
 
   useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        const response = await axios.get(
-          `http://titto.duckdns.org/matching-board-review/get/${postId}`,
-          {
-            headers: {
-              accept: "application/json;charset=UTF-8",
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-        if (response.data.length > 0) {
-          setComments(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching comments:", error);
-      }
-    };
-
     fetchComments();
+    loadUserData();
   }, [postId, accessToken]);
 
+  const loadUserData = () => {
+    axios
+      .get(`http://titto.duckdns.org/user/info`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Accept: "application/json;charset=UTF-8",
+        },
+      })
+      .then((response) => {
+        const userData = response.data;
+        setMyInfo({
+          name: userData.nickname,
+          profileImg: userData.profileImg,
+          lv: 1,
+          id: userData.id,
+          email: userData.email,
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+      });
+  };
+  const fetchComments = async () => {
+    try {
+      const response = await axios.get(
+        `http://titto.duckdns.org/matching-board-review/get/${postId}`,
+        {
+          headers: {
+            accept: "application/json;charset=UTF-8",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      if (response.data.length > 0) {
+        setComments(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+    }
+  };
   const handleDeleteComment = (reviewIdToDelete: number) => {
-    // 확인 팝업 표시
     const confirmDelete = window.confirm("댓글을 삭제하시겠습니까?");
-
-    // 사용자가 확인을 눌렀을 때만 삭제 요청을 보냄
     if (confirmDelete) {
       axios
         .delete(
@@ -123,13 +152,12 @@ const CommentDetail = ({ postId }: { postId: string }) => {
         )
         .then((response) => {
           console.log("댓글이 성공적으로 삭제되었습니다.");
-          // 삭제된 댓글을 상태에서 제거
+
           setComments((prevComments) =>
             prevComments.filter(
               (comment) => comment.reviewId !== reviewIdToDelete
             )
           );
-          // 화면 강제 갱신
           forceUpdate();
         })
         .catch((error) => {
@@ -144,7 +172,7 @@ const CommentDetail = ({ postId }: { postId: string }) => {
         <Wrapper key={comment.reviewId}>
           <ProfileWrapper>
             <div className="profileBox">
-              <img src={comment.profileImg} alt="User-Profile" />
+              <img src={comment.profile} alt="User-Profile" />
               <div className="userdiv">
                 <div className="nick">{comment.reviewAuthor}</div>
                 <div className="lv">
@@ -154,10 +182,14 @@ const CommentDetail = ({ postId }: { postId: string }) => {
               </div>
             </div>
             <div>
-              <button>수정</button>
-              <button onClick={() => handleDeleteComment(comment.reviewId)}>
-                삭제
-              </button>
+              {userMyfo.name === comment.reviewAuthor && ( // 로그인한 유저와 댓글 작성자가 같을 경우 수정/삭제 버튼 표시
+                <div>
+                  <button>수정</button>
+                  <button onClick={() => handleDeleteComment(comment.reviewId)}>
+                    삭제
+                  </button>
+                </div>
+              )}
             </div>
           </ProfileWrapper>
           <DetailWrapper>

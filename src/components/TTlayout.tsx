@@ -4,6 +4,8 @@ import styled from "styled-components";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import MenuIcon from "@mui/icons-material/Menu";
 import TTfooter from "./TTfooter";
+import { UserInfo } from "../screens/board/postView";
+import axios from "axios";
 
 const NavWrapper = styled.nav`
   width: 100%;
@@ -123,6 +125,14 @@ const PopupLogout = styled.div`
 
 const TTlayout = () => {
   const navigate = useNavigate();
+  const [userMyfo, setMyInfo] = useState<UserInfo>({
+    name: "",
+    profileImg: "",
+    lv: 1,
+    id: "",
+    email: "",
+  }); // 로그인 유저 정보
+  const accessToken = localStorage.getItem("accessToken");
 
   const [isPopupOpen, setPopupOpen] = useState(false);
 
@@ -135,7 +145,31 @@ const TTlayout = () => {
     setPopupOpen(false);
   };
 
+  const loadUserData = () => {
+    axios
+      .get(`http://titto.duckdns.org/user/info`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Accept: "application/json;charset=UTF-8",
+        },
+      })
+      .then((response) => {
+        const userData = response.data;
+        setMyInfo({
+          name: userData.nickname,
+          profileImg: userData.profileImg,
+          lv: 1,
+          id: userData.id,
+          email: userData.email,
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+      });
+  };
+
   useEffect(() => {
+    loadUserData();
     const handleClickOutside = (event: MouseEvent) => {
       if (
         isPopupOpen &&
@@ -180,7 +214,7 @@ const TTlayout = () => {
               onClick={() => navigate("/message")}
             />
             <NavImg
-              src="/imgs/UserProfile.png"
+              src={userMyfo.profileImg}
               alt="User-Profile"
               onClick={() => navigate("/mypage/users/:userId/profile")}
             />
@@ -192,7 +226,7 @@ const TTlayout = () => {
             {isPopupOpen && (
               <PopupContainer>
                 <PopupContent>
-                  <PopupProfile>농부왕</PopupProfile>
+                  <PopupProfile>{userMyfo.name}</PopupProfile>
                   <PopupMyPage onClick={() => navigate("/mypage")}>
                     마이페이지
                   </PopupMyPage>

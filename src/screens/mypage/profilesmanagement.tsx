@@ -1,16 +1,48 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import ReactQuill from "react-quill";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import axios from "axios";
 
 const ProfileManagementContent = () => {
   const navigate = useNavigate();
 
+  const [oneLineIntro, setOneLineIntro] = useState("");
+  const [selfIntro, setSelfIntro] = useState("");
   const modules = useMemo(() => {
     return {
       toolbar: false,
     };
   }, []);
+  const handleSaveProfile = () => {
+    // 프로필을 저장하는 요청 보내기
+    const accessToken = localStorage.getItem("accessToken");
+
+    axios
+      .put(
+        "http://titto.duckdns.org/user/profile",
+        {
+          oneLineIntro,
+          selfIntro,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json;charset=UTF-8",
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response.data);
+        // 프로필 저장 성공 시 작업 수행
+        // 예를 들어, 사용자에게 성공 메시지 표시하거나 페이지를 다른 경로로 이동하는 등의 작업 수행 가능
+      })
+      .catch((error) => {
+        console.error("Error saving profile:", error);
+        // 프로필 저장 실패 시 작업 수행
+        // 예를 들어, 사용자에게 실패 메시지 표시하거나 에러 처리 등의 작업 수행 가능
+      });
+  };
 
   return (
     <>
@@ -23,6 +55,9 @@ const ProfileManagementContent = () => {
             <QuillWrapper>
               <ReactQuill
                 modules={modules}
+                value={oneLineIntro}
+                onChange={setOneLineIntro}
+                placeholder="한줄 소개를 입력해주세요."
                 style={{
                   height: "65px",
                 }}
@@ -34,13 +69,15 @@ const ProfileManagementContent = () => {
             <QuillWrapper>
               <ReactQuill
                 modules={modules}
+                value={selfIntro}
+                onChange={setSelfIntro}
                 style={{ height: "200px" }}
               ></ReactQuill>
             </QuillWrapper>
           </ManyLineDiv>
           <div className="btncontainer">
-            <button className="btn" onClick={() => navigate("/")}>
-              수정
+            <button className="btn" onClick={handleSaveProfile}>
+              저장
             </button>
           </div>
         </div>

@@ -8,11 +8,12 @@ import ReactQuill from "react-quill";
 import axios from "axios";
 
 // 유저 정보 타입 정의
-type UserInfo = {
+export type UserInfo = {
   name: string;
   profileImg: string;
   lv: number;
   id: string;
+  email: string;
 };
 
 // 스타일드 컴포넌트들 정의
@@ -127,16 +128,15 @@ const DetailWrapper = styled.div`
 
 const ViewWrapper = styled.div`
   width: 100%;
-  margin-top: 10px;
+  margin-top: 40px;
   color: gray;
   text-align: left;
-  padding-left: 12%;
   .show-comment {
   }
 `;
 
 const CommentWrapper = styled.div`
-  margin-top: 40px;
+  margin-top: 20px;
   padding-top: 30px;
   border-top: 2px solid #bababa;
 
@@ -191,6 +191,7 @@ const PostView = () => {
     profileImg: "",
     lv: 1,
     id: "",
+    email: "",
   }); // 로그인 유저 정보
 
   const [userWriteInfo, setWriteInfo] = useState<UserInfo>({
@@ -198,6 +199,7 @@ const PostView = () => {
     profileImg: "",
     lv: 1,
     id: "",
+    email: "",
   }); // 글 유저 정보
 
   const navigate = useNavigate();
@@ -229,6 +231,7 @@ const PostView = () => {
           profileImg: userData.profileImg,
           lv: 1,
           id: userData.id,
+          email: userData.email,
         });
       })
       .catch((error) => {
@@ -257,6 +260,7 @@ const PostView = () => {
           profileImg: data.profile,
           lv: 1,
           id: "id",
+          email: "email",
         });
       })
       .catch((error) => {
@@ -329,6 +333,36 @@ const PostView = () => {
     }
   };
 
+  // const handleModifyPost = () => {
+  //   const accessToken = localStorage.getItem("accessToken");
+  //   const matchingPostId = postId;
+  //   const requestBody = {
+  //     category: "",
+  //     title: "",
+  //     content: "",
+  //     status: "RECRUITING",
+  //   };
+
+  //   axios
+  //     .put(
+  //       `http://titto.duckdns.org/matching-post/update/${matchingPostId}`,
+  //       requestBody,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${accessToken}`,
+  //           Accept: "application/json;charset=UTF-8",
+  //           "Content-Type": "application/json;charset=UTF-8",
+  //         },
+  //       }
+  //     )
+  //     .then((response) => {
+  //       console.log("게시글이 성공적으로 수정되었습니다.");
+  //       window.location.reload(); // 페이지 리로드
+  //     })
+  //     .catch((error) => {
+  //       console.error("게시글 수정 중 에러가 발생했습니다:", error);
+  //     });
+  // };
   return (
     <Wrapper>
       {/* 카테고리 표시 */}
@@ -344,7 +378,7 @@ const PostView = () => {
           <div className="userdiv">
             <div className="nick">{userWriteInfo.name}</div>
             <div className="lv">
-              LV.{userMyfo.lv} | {date}
+              LV.{userWriteInfo.lv} | {date}
             </div>
           </div>
         </div>
@@ -354,7 +388,10 @@ const PostView = () => {
             userWriteInfo.name &&
             userMyfo.name === userWriteInfo.name && (
               <div>
-                <button className="modify" onClick={() => alert("수정")}>
+                <button
+                  className="modify"
+                  onClick={() => navigate(`/board/write/titto/${postId}`)} // 수정 폼을 따로 만들어야 되나?
+                >
                   수정
                 </button>
                 <button onClick={handleDeletePost}>삭제</button>
@@ -364,9 +401,9 @@ const PostView = () => {
       </ProfileWrapper>
       {/* 글 내용 표시 */}
       <DetailWrapper>
-        <div className="messageDiv">
-          <div className="msgBtn">쪽지 보내기</div>
-        </div>
+        {/* <div className="messageDiv">
+          <div className="msgBtn">쪽지 보내기</div>// 버림
+        </div> */}
         <div
           className="detail"
           dangerouslySetInnerHTML={{ __html: detail }}

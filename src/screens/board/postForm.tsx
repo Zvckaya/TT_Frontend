@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import QuillEditor from "../../components/board/QuillEditor";
@@ -161,15 +161,33 @@ const PostForm = () => {
   const [authorProfile, setProfiles] = useState("");
   const [htmlContent, setContents] = useState("");
 
+  useEffect(() => {
+    if (postId) {
+      // If postId exists, fetch post data and set it to state for editing
+      axios
+        .get(`http://titto.duckdns.org/matching-post/get/${postId}`)
+        .then((response) => {
+          const postData = response.data;
+          setSelectedCategory(postData.category);
+          setTitles(postData.title);
+          setContents(postData.content);
+        })
+        .catch((error) => {
+          console.error("Error fetching post data:", error);
+        });
+    }
+  }, [postId]);
+
   const handleSubmit = async () => {
-    const apiUrl = "http://titto.duckdns.org/matching-post/create";
+    const apiUrl = postId
+      ? `http://titto.duckdns.org/matching-post/update/${postId}`
+      : "http://titto.duckdns.org/matching-post/create";
 
     const requestBody = {
       category: selectedCategory,
       title: title,
       content: htmlContent,
       status: "RECRUITING",
-      profile: authorProfile,
     };
 
     try {
