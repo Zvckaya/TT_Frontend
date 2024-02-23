@@ -16,6 +16,7 @@ export type UserInfo = {
   lv: number;
   id: string;
   email: string;
+  department?: string;
 };
 
 // 스타일드 컴포넌트들 정의

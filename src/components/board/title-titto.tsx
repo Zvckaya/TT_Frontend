@@ -39,7 +39,7 @@ export type TitleType = {
   author: string;
   date: string;
   postId: string;
-  status: string; // 상태 값 추가
+  status: string;
 };
 
 const TittoTitle = ({ title, author, date, postId, status }: TitleType) => {
