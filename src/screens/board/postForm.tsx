@@ -128,7 +128,7 @@ const Submit = styled.div`
 const PostForm = () => {
   const navigate = useNavigate();
   const { boardId = "default", postId } = useParams();
-  const [bType, setBType] = useState<string>("");
+  const [bType, setBType] = useState<string>("작성");
   const quillRef = useRef<ReactQuill | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>(
     boardId === "titto" ? "STUDY" : ""
@@ -157,17 +157,22 @@ const PostForm = () => {
     "전체보기",
   ];
   // const [point, setPoint] = useState(0);
-  const [title, setTitles] = useState("");
+  const [title, setTitles] = useState("제목");
   const [authorProfile, setProfiles] = useState("");
   const [htmlContent, setContents] = useState("");
 
   useEffect(() => {
     if (postId) {
-      // If postId exists, fetch post data and set it to state for editing
+      setBType("수정");
       axios
-        .get(`http://titto.duckdns.org/matching-post/get/${postId}`)
+        .get(`/api/matching-post/get/${postId}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        })
         .then((response) => {
           const postData = response.data;
+          console.log("postData:", postData);
           setSelectedCategory(postData.category);
           setTitles(postData.title);
           setContents(postData.content);
@@ -189,24 +194,38 @@ const PostForm = () => {
       content: htmlContent,
       status: "RECRUITING",
     };
+    if (postId) {
+      try {
+        const response = await axios.put(apiUrl, requestBody, {
+          headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+        console.log("Success:", response.data);
+        navigate(`/board/lists/${boardId}/1`);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    } else {
+      try {
+        const response = await axios.post(apiUrl, requestBody, {
+          headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
 
-    try {
-      const response = await axios.post(apiUrl, requestBody, {
-        headers: {
-          "Content-Type": "application/json;charset=UTF-8",
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
-
-      console.log("Success:", response.data);
-      navigate(`/board/lists/${boardId}/1`);
-    } catch (error) {
-      console.error("Error:", error);
+        console.log("Success:", response.data);
+        navigate(`/board/lists/${boardId}/1`);
+      } catch (error) {
+        console.error("Error:", error);
+      }
     }
   };
   return (
     <Wrapper>
-      <BoardTitle>{bType} 게시판</BoardTitle>
+      <BoardTitle>글 {bType} </BoardTitle>
 
       <Category>
         카테고리 <span style={{ color: "red" }}>*</span>
@@ -232,6 +251,7 @@ const PostForm = () => {
         제목 <span style={{ color: "red" }}>* </span>
         <input
           type="text"
+          value={title}
           onChange={(e) => {
             setTitles(e.target.value);
           }}

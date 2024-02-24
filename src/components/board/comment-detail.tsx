@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { UserInfo } from "../../screens/board/postView";
+import ReactQuill from "react-quill";
+import { values } from "mobx";
 
 export type CommentInfo = {
   profile: string;
@@ -75,9 +77,40 @@ const DetailWrapper = styled.div`
   margin-bottom: 10px;
 `;
 
+const ModifyWrapper = styled.div`
+  width: 100%;
+  margin-top: 20px;
+  text-align: left;
+  font-size: 20px;
+  margin-bottom: 10px;
+  button {
+    margin-top: 10px;
+    width: 100px;
+    height: 40px;
+    border: 1px solid #bababa;
+    font-weight: bold;
+    border-radius: 5px;
+    background-color: #3e68ff;
+    color: white;
+    cursor: pointer;
+  }
+`;
+
 const CommentDetail = ({ postId }: { postId: string }) => {
   const [comments, setComments] = useState<CommentInfo[]>([]);
+  const [detail, setDetail] = useState("");
   const accessToken = localStorage.getItem("accessToken");
+  const [isModify, setIsModify] = useState<boolean>(false);
+  const modules = useMemo(() => {
+    return {
+      toolbar: {
+        container: [
+          [{ header: [1, 2, 3, 4, 5, false] }],
+          ["bold", "underline"],
+        ],
+      },
+    };
+  }, []);
 
   const [userMyfo, setMyInfo] = useState<UserInfo>({
     name: "",
@@ -163,6 +196,36 @@ const CommentDetail = ({ postId }: { postId: string }) => {
     }
   };
 
+  const handleReviewModify = async (
+    reviewId: number,
+    postId: number,
+    content: string
+  ) => {
+    await axios
+      .put(
+        `http://titto.duckdns.org/matching-board-review/update/${reviewId}`,
+        {
+          postId: postId,
+          reviewId: reviewId,
+          content: content,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            Accept: "application/json;charset=UTF-8",
+          },
+        }
+      )
+      .then((response) => {
+        console.log("댓글 수정 성공:", response.data);
+        setIsModify(false);
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.error("댓글 수정 중 에러가 발생했습니다:", error);
+      });
+  };
+
   return (
     <>
       {comments.map((comment) => (
@@ -181,7 +244,7 @@ const CommentDetail = ({ postId }: { postId: string }) => {
             <div>
               {userMyfo.name === comment.reviewAuthor && ( // 로그인한 유저와 댓글 작성자가 같을 경우 수정/삭제 버튼 표시
                 <div>
-                  <button>수정</button>
+                  <button onClick={() => setIsModify(!isModify)}>수정</button>
                   <button onClick={() => handleDeleteComment(comment.reviewId)}>
                     삭제
                   </button>
@@ -189,12 +252,35 @@ const CommentDetail = ({ postId }: { postId: string }) => {
               )}
             </div>
           </ProfileWrapper>
-          <DetailWrapper>
-            <div
-              className="detail"
-              dangerouslySetInnerHTML={{ __html: comment.content }}
-            ></div>
-          </DetailWrapper>
+          {isModify ? (
+            <ModifyWrapper>
+              <ReactQuill
+                modules={modules}
+                value={comment.content}
+                onChange={(content) => {
+                  comment.content = content;
+                }}
+              ></ReactQuill>
+              <button
+                onClick={() => {
+                  handleReviewModify(
+                    comment.reviewId,
+                    parseInt(postId),
+                    comment.content
+                  );
+                }}
+              >
+                수정하기
+              </button>
+            </ModifyWrapper>
+          ) : (
+            <DetailWrapper>
+              <div
+                className="detail"
+                dangerouslySetInnerHTML={{ __html: comment.content }}
+              ></div>
+            </DetailWrapper>
+          )}
         </Wrapper>
       ))}
     </>
