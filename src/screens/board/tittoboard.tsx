@@ -140,9 +140,7 @@ const TittoBoard = ({ id, page }: BoardUrl) => {
     const fetchPosts = async () => {
       try {
         const response = await axios.get(
-          `http://titto.duckdns.org/matching-board/posts?page=${
-            page - 1
-          }&size=10&sort=asc`,
+          `http://titto.duckdns.org/matching-board/posts?page=${page - 1}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
