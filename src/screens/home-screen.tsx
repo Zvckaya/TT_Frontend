@@ -19,6 +19,7 @@ const MyIcon = styled.div`
   margin-top: 30px;
   position: relative;
   transition: transform 0.3s ease-in-out;
+  font-weight: bold;
   &:hover {
     transform: translateY(-10px);
     cursor: pointer;
@@ -56,18 +57,30 @@ const HomeScreen = () => {
   const navigate = useNavigate();
   return (
     <Wrapper>
-      <MaxSlider height="300px"></MaxSlider>
-      <IconMenu onClick={() => navigate("/board/lists/titto/1")}>
+      <MaxSlider></MaxSlider>
+      <IconMenu>
         <MyIcon>
-          <img src="/imgs/myIcon.svg" alt="My Icon" />
+          <img
+            src="/imgs/myIcon.svg"
+            alt="My Icon"
+            onClick={() => navigate("/board/lists/titto/1")}
+          />
           티토찾기
         </MyIcon>
-        <MyIcon onClick={() => navigate("/board/lists/qna/1")}>
-          <img src="/imgs/myIcon.svg" alt="My Icon" />
+        <MyIcon>
+          <img
+            src="/imgs/myIcon.svg"
+            alt="My Icon"
+            onClick={() => navigate("/board/lists/qna/1")}
+          />
           질문하기
         </MyIcon>
-        <MyIcon onClick={() => navigate("/board/lists/titto/")}>
-          <img src="/imgs/myIcon.svg" alt="My Icon" />
+        <MyIcon>
+          <img
+            src="/imgs/myIcon.svg"
+            alt="My Icon"
+            onClick={() => navigate("/board/lists/titto/")}
+          />
           티칭공간
         </MyIcon>
       </IconMenu>

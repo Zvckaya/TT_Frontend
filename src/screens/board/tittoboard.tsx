@@ -167,7 +167,7 @@ const TittoBoard = ({ id, page }: BoardUrl) => {
 
   return (
     <Wrapper>
-      <MaxSlider height="250px"></MaxSlider>
+      <MaxSlider></MaxSlider>
       <BoardWrapper>
         <MainDiv>
           <SearchDiv>
