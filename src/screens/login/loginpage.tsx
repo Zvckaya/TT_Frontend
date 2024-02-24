@@ -138,7 +138,6 @@ const LoginPage = () => {
         localStorage.setItem("accessToken", loginRes.data.accessToken);
         localStorage.setItem("refreshToken", loginRes.data.refreshToken);
         navigate("/");
-        //로그인 성공시 홈으로 이동
       }
     } catch (err) {
       console.log(err);
