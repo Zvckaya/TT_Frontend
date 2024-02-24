@@ -5,8 +5,15 @@ import SearchIcon from "@mui/icons-material/Search";
 import TittoTitle from "../../components/board/title-titto";
 import NumberSelector from "../../components/board/number-selector";
 import TittoCategory from "../../components/board/titto-category";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import axios from "axios";
+import { set } from "mobx";
 
 type BoardUrl = {
   id: string;
@@ -132,34 +139,90 @@ type Post = {
 
 const TittoBoard = ({ id, page }: BoardUrl) => {
   const { boardId } = useParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [pages, setPages] = useState(0);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [searchValue, setSearchValue] = useState("");
   const accessToken = localStorage.getItem("accessToken");
 
   useEffect(() => {
     const fetchPosts = async () => {
-      try {
-        const response = await axios.get(
-          `http://titto.duckdns.org/matching-board/all?page=${page - 1}`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
+      if (searchParams.has("search")) {
+        console.log(searchParams.get("search"));
+        try {
+          const response = await axios.get(
+            `/api/matching-board/search?page=${
+              page - 1
+            }&keyWord=${searchParams.get("search")}`,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
 
-        console.log("Success:", response.data);
-        setPages(response.data.totalPages);
-        const formattedPosts = response.data.content.map((post: Post) => ({
-          ...post,
-          createDate: new Date(
-            new Date(post.createDate).getTime()
-          ).toLocaleString(),
-        }));
-        setPosts(formattedPosts);
-      } catch (error) {
-        console.error(error);
+          console.log("Success:", response.data);
+          setPages(response.data.totalPages);
+          const formattedPosts = response.data.content.map((post: Post) => ({
+            ...post,
+            createDate: new Date(
+              new Date(post.createDate).getTime()
+            ).toLocaleString(),
+          }));
+          setPosts(formattedPosts);
+        } catch (error) {
+          console.error(error);
+        }
+      } else if (searchParams.has("category")) {
+        console.log(searchParams.get("category"));
+        try {
+          const response = await axios.get(
+            `/api/matching-board/category?page=${
+              page - 1
+            }&category=${searchParams.get("category")}`,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
+
+          console.log("Success:", response.data);
+          setPages(response.data.totalPages);
+          const formattedPosts = response.data.content.map((post: Post) => ({
+            ...post,
+            createDate: new Date(
+              new Date(post.createDate).getTime()
+            ).toLocaleString(),
+          }));
+          setPosts(formattedPosts);
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        try {
+          const response = await axios.get(
+            `http://titto.duckdns.org/matching-board/all?page=${page - 1}`,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
+
+          //console.log("Success:", response.data);
+          setPages(response.data.totalPages);
+          const formattedPosts = response.data.content.map((post: Post) => ({
+            ...post,
+            createDate: new Date(
+              new Date(post.createDate).getTime()
+            ).toLocaleString(),
+          }));
+          setPosts(formattedPosts);
+        } catch (error) {
+          console.error(error);
+        }
       }
     };
 
@@ -172,8 +235,21 @@ const TittoBoard = ({ id, page }: BoardUrl) => {
       <BoardWrapper>
         <MainDiv>
           <SearchDiv>
-            <input type="text" placeholder="제목 검색하기" />
-            <button>
+            <input
+              type="text"
+              placeholder="제목 검색하기"
+              value={searchValue}
+              onChange={(e) => {
+                setSearchValue(e.target.value);
+                console.log(searchValue);
+              }}
+            />
+            <button
+              onClick={() => {
+                navigate(`/board/lists/titto/1/${searchValue}`);
+                window.location.reload();
+              }}
+            >
               <SearchIcon style={{ fontSize: "50px" }}></SearchIcon>
             </button>
           </SearchDiv>

@@ -13,6 +13,7 @@ export type CommentInfo = {
   reviewAuthor: string;
   content: string;
   updateDate: string;
+  modify?: boolean; //기본 false
 };
 
 const Wrapper = styled.div`
@@ -244,7 +245,14 @@ const CommentDetail = ({ postId }: { postId: string }) => {
             <div>
               {userMyfo.name === comment.reviewAuthor && ( // 로그인한 유저와 댓글 작성자가 같을 경우 수정/삭제 버튼 표시
                 <div>
-                  <button onClick={() => setIsModify(!isModify)}>수정</button>
+                  <button
+                    onClick={() => {
+                      comment.modify = !comment.modify;
+                      setIsModify(!isModify);
+                    }}
+                  >
+                    수정
+                  </button>
                   <button onClick={() => handleDeleteComment(comment.reviewId)}>
                     삭제
                   </button>
@@ -252,7 +260,7 @@ const CommentDetail = ({ postId }: { postId: string }) => {
               )}
             </div>
           </ProfileWrapper>
-          {isModify ? (
+          {comment.modify ? (
             <ModifyWrapper>
               <ReactQuill
                 modules={modules}

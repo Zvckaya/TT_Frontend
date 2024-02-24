@@ -10,6 +10,7 @@ const BoardRoutes: React.FC = () => {
   return (
     <Routes>
       <Route path="lists/:boardId/:page" element={<BoardScreen />} />
+      <Route path="lists/:boardId/:page/:search" element={<BoardScreen />} />
       <Route path="view/:boardId/:postId" element={<PostView />} />
       <Route path="write/:boardId" element={<PostForm />} />
       <Route path="modify/:boardId/:postId" element={<PostForm />} />
