@@ -61,13 +61,11 @@ const WelcomePage = () => {
     // 유저 정보를 불러오는 함수
     const fetchUserInfo = async () => {
       try {
-        const response = await axios.get("http://titto.duckdns.org/user/info", {
+        const response = await axios.get("/api/user/info", {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // localStorage에서 accessToken을 가져와서 사용
-            Accept: "application/json-UTF-8", //
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
         });
-
         // 요청이 성공하면 닉네임 설정
         setNickname(response.data.nickname || "");
       } catch (error) {

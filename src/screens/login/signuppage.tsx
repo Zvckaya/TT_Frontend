@@ -2,6 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { set } from "mobx";
 
 const SignUpWrapper = styled.div`
   width: 800px;
@@ -117,20 +118,22 @@ const SignUpSelect = styled.select`
 
 const SignUpError = styled.div`
   font-size: 14px;
-  color: #ff3d3d;
+  color: ${(props) => props.color || "red"};
   font-weight: bold;
   margin-top: -20px;
   margin-bottom: 20px;
 `;
 
 const SignUpPage = () => {
+  const [errorcolor, setErrorcolor] = useState("red");
+
   const navigate = useNavigate();
   const [nickname, setNickname] = useState("");
   const [studentNo, setStudentNo] = useState("");
   const [nicknameError, setNicknameError] = useState("");
   const [studentNoError, setStudentNoError] = useState("");
   const accessToken = localStorage.getItem("accessToken");
-  console.log(accessToken);
+
   const handleNicknameCheck = async () => {
     try {
       const res = await axios.get("/user/check/nickname", {
@@ -139,7 +142,8 @@ const SignUpPage = () => {
         },
       });
       if (res.status === 200) {
-        setNicknameError("");
+        setNicknameError("사용 가능한 닉네임입니다.");
+        setErrorcolor("green");
       }
     } catch (error: any) {
       if (error.response.status === 400) {
@@ -158,7 +162,8 @@ const SignUpPage = () => {
         },
       });
       if (res.status === 200) {
-        setStudentNoError("");
+        setStudentNoError("사용 가능한 학번입니다.");
+        setErrorcolor("green");
       }
     } catch (error: any) {
       if (error.response.status === 400) {
@@ -244,7 +249,7 @@ const SignUpPage = () => {
             중복확인
           </button>
         </SignUpInputContainer>
-        <SignUpError>{nicknameError}</SignUpError>
+        <SignUpError color={errorcolor}>{nicknameError}</SignUpError>
         <SignUpLabel>학번</SignUpLabel>
         <SignUpInputContainer>
           <input
@@ -258,7 +263,7 @@ const SignUpPage = () => {
             중복확인
           </button>
         </SignUpInputContainer>
-        <SignUpError>{studentNoError}</SignUpError>
+        <SignUpError color={errorcolor}>{studentNoError}</SignUpError>
         <SignUpLabel>소속</SignUpLabel>
         <SignUpSelect name="department">
           <option value="소프트웨어공학과">소프트웨어공학과</option>
