@@ -1,19 +1,25 @@
-import { Title } from "@mui/icons-material";
-import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useState, useEffect, useMemo } from "react";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import SmsIcon from "@mui/icons-material/Sms";
-import CommentDetail from "../../components/board/comment-detail";
+import CommentDetail, {
+  CommentInfo,
+} from "../../components/board/comment-detail";
 import ReactQuill from "react-quill";
+import axios from "axios";
 
-type UserInfo = {
+// 유저 정보 타입 정의
+export type UserInfo = {
   name: string;
   profileImg: string;
   lv: number;
   id: string;
+  email: string;
+  department?: string;
 };
 
+// 스타일드 컴포넌트들 정의
 const Wrapper = styled.div`
   width: 100%;
   margin-top: 10px;
@@ -83,6 +89,15 @@ const ProfileWrapper = styled.div`
     font-weight: bold;
     margin-left: 10px;
   }
+  .btnfix {
+    background-color: #3e68ff;
+    color: white;
+    cursor: pointer;
+
+    &:active {
+      background-color: #8fa3ea;
+    }
+  }
 
   .modify {
     background-color: white;
@@ -96,6 +111,7 @@ const DetailWrapper = styled.div`
   margin-top: 30px;
   display: flex;
   justify-content: space-between;
+  line-height: 1.5;
 
   .messageDiv {
     width: 10%;
@@ -124,16 +140,15 @@ const DetailWrapper = styled.div`
 
 const ViewWrapper = styled.div`
   width: 100%;
-  margin-top: 10px;
+  margin-top: 40px;
   color: gray;
   text-align: left;
-  padding-left: 12%;
   .show-comment {
   }
 `;
 
 const CommentWrapper = styled.div`
-  margin-top: 40px;
+  margin-top: 20px;
   padding-top: 30px;
   border-top: 2px solid #bababa;
 
@@ -168,23 +183,58 @@ const SubmitWrapper = styled.div`
 `;
 
 const PostView = () => {
-  const [title, setTitles] = useState("제목입니다");
-  const [detail, setDetail] = useState(
-    "<p>안녕하세요</p><p>반갑습니다</p><br/><br/><h1>하세기!</h1>"
-  );
-  const [category, setCategory] = useState("카테고리");
-  const [date, setDate] = useState("2021-09-01");
+  const [title, setTitles] = useState("");
+  const [detail, setDetail] = useState("");
+  const [category, setCategory] = useState("");
+  const [status, setStatus] = useState("");
+  const [date, setDate] = useState("");
   const { boardId = "default", postId } = useParams();
   const [view, setView] = useState(13);
-  const [comment, setComment] = useState(2);
-
-  const [userInfo, setUserInfo] = useState<UserInfo>({
-    name: "하세기",
-    profileImg: "/imgs/UserProfile.png",
+  const [comment, setComment] = useState();
+  const accessToken = localStorage.getItem("accessToken");
+  const [reviewContent, setReviewContent] = useState("");
+  const [userMyfo, setMyInfo] = useState<UserInfo>({
+    name: "",
+    profileImg: "",
     lv: 1,
-    id: "hsk",
-  });
+    id: "",
+    email: "",
+  }); // 로그인 유저 정보
 
+  const [userWriteInfo, setWriteInfo] = useState<UserInfo>({
+    name: "",
+    profileImg: "",
+    lv: 1,
+    id: "",
+    email: "",
+  }); // 글 유저 정보
+
+  interface statusMapping {
+    RECRUITING: string;
+    RECRUITMENT_COMPLETED: string;
+  }
+  const statusMapping: statusMapping = {
+    RECRUITING: "모집 중",
+    RECRUITMENT_COMPLETED: "완료",
+  };
+
+  interface CategoryMapping {
+    STUDY: string;
+    MENTOR: string;
+    MENTEE: string;
+    UHWOOLLEAM: string;
+  }
+
+  const categoryMapping: CategoryMapping = {
+    STUDY: "스터디구해요",
+    MENTOR: "멘토찾아요",
+    MENTEE: "멘티찾아요",
+    UHWOOLLEAM: "어울림찾아요",
+  };
+
+  const navigate = useNavigate();
+
+  // Quill 에디터 모듈 정의
   const modules = useMemo(() => {
     return {
       toolbar: {
@@ -196,63 +246,238 @@ const PostView = () => {
     };
   }, []);
 
+  const loadUserData = () => {
+    axios
+      .get(`http://titto.duckdns.org/user/info`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Accept: "application/json;charset=UTF-8",
+        },
+      })
+      .then((response) => {
+        const userData = response.data;
+        setMyInfo({
+          name: userData.nickname,
+          profileImg: userData.profileImg,
+          lv: 1,
+          id: userData.id,
+          email: userData.email,
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+      });
+  };
+
+  const loadPostData = () => {
+    axios
+      .get(`http://titto.duckdns.org/matching-post/get/${postId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Accept: "application/json;charset=UTF-8",
+        },
+      })
+      .then((response) => {
+        const data = response.data;
+        setTitles(data.title);
+        setDetail(data.content);
+        setCategory(data.category);
+        setDate(new Date(data.updateDate).toLocaleString("ko-KR"));
+        setView(data.viewCount);
+        setComment(data.reviewCount);
+        setStatus(data.status);
+        setWriteInfo({
+          name: data.authorNickName,
+          profileImg: data.profile,
+          lv: 1,
+          id: "id",
+          email: "email",
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching post data:", error);
+      });
+  };
+
   useEffect(() => {
-    //여기서 api통신
-  }, []);
+    loadUserData();
+    loadPostData();
+  }, [accessToken, postId]);
+
+  const handleReviewSubmit = () => {
+    axios
+      .post(
+        `http://titto.duckdns.org/matching-board-review/create`,
+        {
+          postId: postId,
+          content: reviewContent,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            Accept: "application/json;charset=UTF-8",
+            "Content-Type": "application/json;charset=UTF-8",
+          },
+        }
+      )
+      .then((response) => {
+        // 요청이 성공한 경우
+        console.log("리뷰가 성공적으로 작성되었습니다.");
+        console.log(
+          "리뷰 id, 코멘트:",
+          response.data.reviewAuthor,
+          response.data.content
+        );
+        loadPostData();
+        setReviewContent("");
+
+        window.location.reload(); // 일단..
+      })
+      .catch((error) => {
+        // 요청이 실패한 경우
+        console.error("리뷰 작성 중 에러가 발생했습니다:", error);
+      });
+  };
+
+  const handleDeletePost = () => {
+    // 확인 팝업 표시
+    const confirmDelete = window.confirm("게시글을 삭제하시겠습니까?");
+
+    // 사용자가 확인을 눌렀을 때만 삭제 요청을 보냄
+    if (confirmDelete) {
+      const matchingPostIdToDelete = postId;
+      axios
+        .delete(
+          `http://titto.duckdns.org/matching-post/delete/${matchingPostIdToDelete}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              Accept: "application/json;charset=UTF-8",
+            },
+          }
+        )
+        .then((response) => {
+          console.log("게시글이 성공적으로 삭제되었습니다.");
+          navigate(`/board/lists/${boardId}/1`);
+        })
+        .catch((error) => {
+          console.error("게시글 삭제 중 에러가 발생했습니다:", error);
+        });
+    }
+  };
+
+  const handleToggleStatus = () => {
+    const newStatus =
+      status === "RECRUITING" ? "RECRUITMENT_COMPLETED" : "RECRUITING";
+    setStatus(newStatus);
+
+    axios
+      .put(
+        `http://titto.duckdns.org/matching-post/update/${postId}`,
+        {
+          category: category,
+          title: title,
+          content: reviewContent,
+          status: newStatus,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            Accept: "application/json",
+            "Content-Type": "application/json;charset=UTF-8",
+          },
+        }
+      )
+      .then((response) => {
+        console.log("상태가 성공적으로 업데이트되었습니다.");
+        console.log(response.data); // 서버 응답 확인
+      })
+      .catch((error) => {
+        console.error("상태 업데이트 중 에러가 발생했습니다:", error);
+      });
+  };
 
   return (
     <Wrapper>
+      {/* 카테고리 표시 */}
       <CategoryWrapper>
-        <div className="categoryBox">{category}</div>
+        <div className="categoryBox">
+          {categoryMapping[category as keyof CategoryMapping]}
+        </div>
       </CategoryWrapper>
+      {/* 제목 표시 */}
       <TitleWrapper>{title}</TitleWrapper>
+      {/* 프로필 표시 */}
       <ProfileWrapper>
         <div className="profileBox">
-          <img src={userInfo.profileImg} alt="User-Profile" />
+          <img src={userWriteInfo.profileImg} alt="User-Profile" />
           <div className="userdiv">
-            <div className="nick">{userInfo.name}</div>
-
+            <div className="nick">{userWriteInfo.name}</div>
             <div className="lv">
-              LV.{userInfo.lv} | {date}
+              LV.{userWriteInfo.lv} | {date}
             </div>
           </div>
         </div>
+        {/* 로그인한 유저와 글 작성자가 같을 경우 수정/삭제 버튼 표시 */}
         <div>
-          {userInfo.name === "하세기" && ( //로컬에서의 검증
-            <div>
-              <button className="modify" onClick={() => alert("수정")}>
-                수정
-              </button>
-              <button onClick={() => alert("삭제")}>삭제</button>
-            </div>
-          )}
+          {userMyfo.name &&
+            userWriteInfo.name &&
+            userMyfo.name === userWriteInfo.name && (
+              <div>
+                <button className="btnfix" onClick={handleToggleStatus}>
+                  {statusMapping[status as keyof statusMapping]}
+                </button>
+                <button
+                  className="modify"
+                  onClick={() => navigate(`/board/write/titto/${postId}`)} // 수정 폼을 따로 만들어야 되나?
+                >
+                  수정
+                </button>
+                <button onClick={handleDeletePost}>삭제</button>
+              </div>
+            )}
         </div>
       </ProfileWrapper>
+      {/* 글 내용 표시 */}
       <DetailWrapper>
-        <div className="messageDiv">
-          <div className="msgBtn">쪽지 보내기</div>
-        </div>
+        {/* <div className="messageDiv">
+          <div className="msgBtn">쪽지 보내기</div>// 버림
+        </div> */}
         <div
           className="detail"
           dangerouslySetInnerHTML={{ __html: detail }}
         ></div>
       </DetailWrapper>
+      {/* 조회수, 댓글 수 표시 */}
       <ViewWrapper>
         <div className="show-comment">
           <VisibilityIcon style={{ fontSize: "0.8em" }} /> {view}{" "}
           <div style={{ display: "inline-block", width: "10px" }}> </div>
-          <SmsIcon style={{ fontSize: "0.8em" }}></SmsIcon> {comment}
+          <SmsIcon style={{ fontSize: "0.8em" }}></SmsIcon>
+          {comment}
         </div>
       </ViewWrapper>
+      {/* 댓글 표시 */}
       <CommentWrapper>
-        <span style={{ fontWeight: "bold", fontSize: "20px" }}>댓글 0개</span>
-        <CommentDetail commentId={1} />
+        <span style={{ fontWeight: "bold", fontSize: "20px" }}>
+          댓글 {comment}개
+        </span>
       </CommentWrapper>
+      <CommentDetail postId={postId || ""} />
+      {/* Quill 에디터 표시 */}
       <QuillWrapper>
-        <ReactQuill modules={modules} style={{ height: "200px" }}></ReactQuill>
+        <ReactQuill
+          modules={modules}
+          style={{ height: "200px" }}
+          value={reviewContent} // Quill 에디터의 값 설정
+          onChange={setReviewContent} // 사용자 입력 내용 업데이트
+        ></ReactQuill>
       </QuillWrapper>
+      {/* 등록 버튼 */}
       <SubmitWrapper>
-        <div className="btn">등록</div>
+        <div className="btn" onClick={handleReviewSubmit}>
+          등록
+        </div>
       </SubmitWrapper>
     </Wrapper>
   );

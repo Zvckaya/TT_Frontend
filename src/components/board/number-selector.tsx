@@ -1,9 +1,10 @@
+import React, { useState } from "react";
 import styled from "styled-components";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-type boardUrl = {
+type BoardUrl = {
   id: string;
   page: number;
   pages: number;
@@ -52,16 +53,24 @@ const ArrowDiv = styled.div`
   margin-right: 10px;
 `;
 
-const NumberSelector = ({ id, page, pages }: boardUrl) => {
+const NumberSelector = ({ id, page, pages }: BoardUrl) => {
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(page);
 
   const handleArrowClick = (increment: number) => {
-    const newPage = Math.floor(currentPage / 5) * 5 + increment + 1;
+    const newPage = currentPage + increment;
 
     if (newPage >= 1 && newPage <= pages) {
       setCurrentPage(newPage);
+      navigate(`/board/lists/titto/${newPage}`);
     }
   };
+
+  const handlePageClick = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    navigate(`/board/lists/titto/${pageNumber}`);
+  };
+
   const renderPageNumbers = () => {
     const startPage = Math.floor((currentPage - 1) / 5) * 5 + 1;
     const remainingPages = pages - startPage + 1;
@@ -82,7 +91,7 @@ const NumberSelector = ({ id, page, pages }: boardUrl) => {
           <NumSpan
             key={pageNumber}
             className={pageNumber === currentPage ? "selected" : ""}
-            onClick={() => setCurrentPage(pageNumber)}
+            onClick={() => handlePageClick(pageNumber)}
           >
             {pageNumber}
           </NumSpan>

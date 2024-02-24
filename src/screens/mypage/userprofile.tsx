@@ -1,17 +1,58 @@
 import styled from "styled-components";
 import HBoarddetail from "../../components/home/board-detail";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { UserInfo } from "../board/postView";
 const UserProfile = () => {
+  const navigate = useNavigate();
+  const accessToken = localStorage.getItem("accessToken");
+  const [userMyfo, setMyInfo] = useState<UserInfo>({
+    name: "",
+    profileImg: "",
+    lv: 1,
+    id: "",
+    email: "",
+    department: "소프트웨어공학과",
+  }); // 로그인 유저 정보
+  useEffect(() => {
+    const loadUserData = () => {
+      axios
+        .get("http://titto.duckdns.org/user/info", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            Accept: "application/json;charset=UTF-8",
+          },
+        })
+        .then((response) => {
+          const userData = response.data;
+          setMyInfo({
+            name: userData.nickname,
+            profileImg: userData.profileImg,
+            lv: 1,
+            id: userData.id,
+            email: userData.email,
+            department: userData.department,
+          });
+        })
+        .catch((error) => {
+          console.error("사용자 데이터 불러오기 오류:", error);
+        });
+    };
+
+    loadUserData();
+  }, [accessToken]);
   return (
     <>
       <UserProfileWrapper>
         <UserProfileMainContainer>
           <UserProfileMainProfileContainer>
-            <img src="/imgs/UserProfile.png" alt="User-Profile"></img>
+            <img src={userMyfo.profileImg} alt="User-Profile"></img>
             <UserProfileMainTextContainer>
-              <h1>허남규</h1>
-              <h2>LV.2</h2>
+              <h1>{userMyfo.name}</h1>
+              <h2>LV.{userMyfo.lv}</h2>
               <p>19학번</p>
-              <p>컴퓨터공학과</p>
+              <p>{userMyfo.department}</p>
             </UserProfileMainTextContainer>
           </UserProfileMainProfileContainer>
 
@@ -27,31 +68,34 @@ const UserProfile = () => {
             </UserProfileMainIntroduceTopContainer>
             <UserProfileMainIntroduceBottomContainer>
               <h1>보유 뱃지</h1>
-              <img src="/imgs/UserProfile.png" alt="User-Profile"></img>
+              <img src="/imgs/bg.png" alt="User-Profile"></img>
               <img src="/imgs/UserProfile.png" alt="User-Profile"></img>
             </UserProfileMainIntroduceBottomContainer>
           </UserProfileMainIntroduceContainer>
 
           <UserProfileMainLevelContainer>
-            <p>다음 레벨까지</p>
-            <h1>210내공남았어요.</h1>
-            <Progress>
-              <Dealt />
-            </Progress>
-            <p>답변한 글 수</p>
-            <h1>총 17개 답변했어요.</h1>
-
-            <p>채택된 글 수</p>
-            <h1>총 7개 채택됐어요.</h1>
-
+            <div>
+              <p>다음 레벨까지</p>
+              <h1>210내공남았어요.</h1>
+              <Progress>
+                <Dealt />
+              </Progress>
+              <p>답변한 글 수</p>
+              <h1>총 17개 답변했어요.</h1>
+              <p>채택된 글 수</p>
+              <h1>총 7개 채택됐어요.</h1>
+            </div>
             <p>채택률</p>
-            <h1>53%</h1>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <h1>53%</h1>
+              <div className="btn">쪽지 보내기</div>
+            </div>
           </UserProfileMainLevelContainer>
         </UserProfileMainContainer>
 
         <UserProfileSubContainer>
           <UserProfileStudyContainer>
-            <p>스터디 목록</p>
+            <p>채택된 글</p>
           </UserProfileStudyContainer>
           <UserProfileWritePostContainer>
             <p>작성한 글</p>
@@ -218,6 +262,20 @@ const UserProfileMainLevelContainer = styled.div`
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 40px;
+  }
+  .btn {
+    width: 100px;
+    height: 35px;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 2em;
+    border: none;
+    background-color: #3e68ff;
+    color: white;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+    margin-left: 10px;
   }
 `;
 const Progress = styled.div`

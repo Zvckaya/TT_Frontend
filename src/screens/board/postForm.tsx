@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
-import ReactQuill from "react-quill";
-import { useParams } from "react-router-dom";
+import React, { useState, useRef, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
-import QuilllEditor from "../../components/board/QuillEditor";
+import QuillEditor from "../../components/board/QuillEditor";
+import ReactQuill from "react-quill";
+import axios from "axios";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -124,29 +125,29 @@ const Submit = styled.div`
   }
 `;
 
-const BoardType = (boardId: string): string => {
-  switch (boardId) {
-    case "titto":
-      return "티토";
-    case "qna":
-      return "질문";
-    default:
-      return "!!!";
-  }
-};
-
-const CategorySelect = (lists: string[]) => {
-  return lists.map((list, index) => {
-    return <option key={index}>{list}</option>;
-  });
-};
-
 const PostForm = () => {
+  const navigate = useNavigate();
   const { boardId = "default", postId } = useParams();
   const [bType, setBType] = useState<string>("");
   const quillRef = useRef<ReactQuill | null>(null);
-  const tittoCategory = ["멘토구해요", "멘티구해요", "어울려요"];
-  const qnaCategory = [
+  const [selectedCategory, setSelectedCategory] = useState<string>(
+    boardId === "titto" ? "STUDY" : ""
+  );
+  const selectedTittoCategory = ["STUDY", "MENTOR", "MENTEE", "UHWOOLLEAM"];
+  interface CategoryMapping {
+    STUDY: string;
+    MENTOR: string;
+    MENTEE: string;
+    UHWOOLLEAM: string;
+  }
+
+  const categoryMapping: CategoryMapping = {
+    STUDY: "스터디구해요",
+    MENTOR: "멘토찾아요",
+    MENTEE: "멘티찾아요",
+    UHWOOLLEAM: "어울림찾아요",
+  };
+  const selectedQnaCategory = [
     "인문융합콘텐츠",
     "경영",
     "사회융합",
@@ -155,54 +156,78 @@ const PostForm = () => {
     "소프트웨어 융합",
     "전체보기",
   ];
-  const [point, setPoint] = useState(0);
-
-  console.log(postId);
+  // const [point, setPoint] = useState(0);
   const [title, setTitles] = useState("");
+  const [authorProfile, setProfiles] = useState("");
   const [htmlContent, setContents] = useState("");
 
-  const HandleSubmit = async () => {
-    // 여기에서 api로 결정
-  };
+  useEffect(() => {
+    if (postId) {
+      // If postId exists, fetch post data and set it to state for editing
+      axios
+        .get(`http://titto.duckdns.org/matching-post/get/${postId}`)
+        .then((response) => {
+          const postData = response.data;
+          setSelectedCategory(postData.category);
+          setTitles(postData.title);
+          setContents(postData.content);
+        })
+        .catch((error) => {
+          console.error("Error fetching post data:", error);
+        });
+    }
+  }, [postId]);
 
-  const modules = useMemo(() => {
-    return {
-      toolbar: {
-        container: [
-          ["image"],
-          [{ header: [1, 2, 3, 4, 5, false] }],
-          ["bold", "underline"],
-        ],
-      },
+  const handleSubmit = async () => {
+    const apiUrl = postId
+      ? `http://titto.duckdns.org/matching-post/update/${postId}`
+      : "http://titto.duckdns.org/matching-post/create";
+
+    const requestBody = {
+      category: selectedCategory,
+      title: title,
+      content: htmlContent,
+      status: "RECRUITING",
     };
-  }, []);
 
-  const imageHandler = () => {
-    if (quillRef.current) {
-      const input = document.createElement("input");
-      input.setAttribute("type", "file");
-      input.setAttribute("accept", "image/*");
-      input.click();
+    try {
+      const response = await axios.post(apiUrl, requestBody, {
+        headers: {
+          "Content-Type": "application/json;charset=UTF-8",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+
+      console.log("Success:", response.data);
+      navigate(`/board/lists/${boardId}/1`);
+    } catch (error) {
+      console.error("Error:", error);
     }
   };
-
-  useEffect(() => {
-    setBType(BoardType(boardId));
-  }, [boardId]);
-
-  useEffect(() => {
-    console.log(htmlContent);
-  }, [htmlContent]);
-
   return (
     <Wrapper>
       <BoardTitle>{bType} 게시판</BoardTitle>
+
       <Category>
         카테고리 <span style={{ color: "red" }}>*</span>
-        <select>
-          {CategorySelect(boardId === "titto" ? tittoCategory : qnaCategory)}
+        <select
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+        >
+          {boardId === "titto"
+            ? selectedTittoCategory.map((category) => (
+                <option key={category} value={category}>
+                  {categoryMapping[category as keyof CategoryMapping]}
+                </option>
+              ))
+            : selectedQnaCategory.map((category) => (
+                <option key={category} value={category}>
+                  {categoryMapping[category as keyof CategoryMapping]}
+                </option>
+              ))}
         </select>
       </Category>
+
       <Title>
         제목 <span style={{ color: "red" }}>* </span>
         <input
@@ -231,15 +256,22 @@ const PostForm = () => {
       <Content>
         내용 <span style={{ color: "red" }}>*</span>
         <br />
-        <QuilllEditor
+        <QuillEditor
           quillRef={quillRef}
           htmlContent={htmlContent}
           setHtmlContent={setContents}
         />
       </Content>
       <Submit>
-        <button className="cancel">취소</button>
-        <button className="submit" onClick={HandleSubmit}>
+        <button
+          className="cancel"
+          onClick={() => {
+            history.back();
+          }}
+        >
+          취소
+        </button>
+        <button className="submit" onClick={handleSubmit}>
           {postId ? "수정" : "작성"}
         </button>
       </Submit>

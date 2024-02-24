@@ -1,12 +1,14 @@
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import MaxSlider from "../../components/slider-max";
 import SearchIcon from "@mui/icons-material/Search";
 import TittoTitle from "../../components/board/title-titto";
 import NumberSelector from "../../components/board/number-selector";
 import TittoCategory from "../../components/board/titto-category";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 
-type boardUrl = {
+type BoardUrl = {
   id: string;
   page: number;
 };
@@ -118,10 +120,51 @@ const SubmitWrapper = styled.div`
   }
 `;
 
-const TittoBoard = ({ id, page }: boardUrl) => {
+type Post = {
+  matchingPostId: string;
+  title: string;
+  user: {
+    nickname: string;
+  };
+  createDate: string;
+  status: string;
+};
+
+const TittoBoard = ({ id, page }: BoardUrl) => {
   const { boardId } = useParams();
   const navigate = useNavigate();
-  const pages = 32;
+  const [posts, setPosts] = useState<Post[]>([]);
+  const accessToken = localStorage.getItem("accessToken");
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await axios.get(
+          `http://titto.duckdns.org/matching-board/posts?page=${page - 1}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+
+        console.log("Success:", response.data);
+        const formattedPosts = response.data.content.map((post: Post) => ({
+          ...post,
+
+          createDate: new Date(
+            new Date(post.createDate).getTime()
+          ).toLocaleString(),
+        }));
+        setPosts(formattedPosts);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchPosts();
+  }, [page]);
+
   return (
     <Wrapper>
       <MaxSlider height="250px"></MaxSlider>
@@ -149,49 +192,16 @@ const TittoBoard = ({ id, page }: boardUrl) => {
                 </tr>
               </thead>
               <tbody>
-                <TittoTitle
-                  search={false}
-                  title="멘티 선착순 1명"
-                  author="동큔큔"
-                  date="01/01"
-                />
-
-                <TittoTitle
-                  search={false}
-                  title="멘티 선착순 1명"
-                  author="동큔큔"
-                  date="01/01"
-                />
-                <TittoTitle
-                  search={false}
-                  title="멘티 선착순 1명"
-                  author="동큔큔"
-                  date="01/01"
-                />
-                <TittoTitle
-                  search={false}
-                  title="멘티 선착순 1명"
-                  author="동큔큔"
-                  date="01/01"
-                />
-                <TittoTitle
-                  search={false}
-                  title="멘티 선착순 1명"
-                  author="동큔큔"
-                  date="01/01"
-                />
-                <TittoTitle
-                  search={false}
-                  title="멘티 선착순 1명"
-                  author="동큔큔"
-                  date="01/01"
-                />
-                <TittoTitle
-                  search={false}
-                  title="멘티 선착순 1명"
-                  author="동큔큔"
-                  date="01/01"
-                />
+                {posts.map((post) => (
+                  <TittoTitle
+                    status={post.status}
+                    key={post.matchingPostId}
+                    title={post.title}
+                    author={post.user.nickname}
+                    date={post.createDate}
+                    postId={post.matchingPostId}
+                  />
+                ))}
               </tbody>
             </table>
           </PostWrapper>

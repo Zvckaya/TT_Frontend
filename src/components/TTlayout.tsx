@@ -4,6 +4,8 @@ import styled from "styled-components";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import MenuIcon from "@mui/icons-material/Menu";
 import TTfooter from "./TTfooter";
+import { UserInfo } from "../screens/board/postView";
+import axios from "axios";
 
 const NavWrapper = styled.nav`
   width: 100%;
@@ -56,13 +58,14 @@ const NavLi = styled.li`
     width: 100%;
   }
 `;
+
 const NavLogo = styled.h1`
   font-size: 32px;
   font-weight: bold;
   color: #3e68ff;
 `;
 
-const NavProflie = styled.div`
+const NavProfile = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
@@ -123,6 +126,15 @@ const PopupLogout = styled.div`
 
 const TTlayout = () => {
   const navigate = useNavigate();
+  const [userMyfo, setMyInfo] = useState<UserInfo>({
+    name: "",
+    profileImg: "",
+    lv: 1,
+    id: "",
+    email: "",
+  }); // 로그인 유저 정보
+  const accessToken = localStorage.getItem("accessToken");
+  const refreshToken = localStorage.getItem("refreshToken");
 
   const [isPopupOpen, setPopupOpen] = useState(false);
 
@@ -134,6 +146,59 @@ const TTlayout = () => {
   const closePopup = () => {
     setPopupOpen(false);
   };
+
+  const logout = () => {
+    axios
+      .post(
+        "http://titto.duckdns.org/oauth/logout",
+        {
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            Accept: "application/json;charset=UTF-8",
+            "Content-Type": "application/json;charset=UTF-8",
+          },
+        }
+      )
+      .then((response) => {
+        // 로그아웃 성공 시 처리
+        console.log("로그아웃 완료");
+        navigate("/login/sign_in");
+      })
+      .catch((error) => {
+        console.error("로그아웃 오류:", error);
+      });
+  };
+
+  useEffect(() => {
+    const loadUserData = () => {
+      axios
+        .get("http://titto.duckdns.org/user/info", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            Accept: "application/json;charset=UTF-8",
+          },
+        })
+        .then((response) => {
+          const userData = response.data;
+          setMyInfo({
+            name: userData.nickname,
+            profileImg: userData.profileImg,
+            lv: 1,
+            id: userData.id,
+            email: userData.email,
+          });
+        })
+        .catch((error) => {
+          console.error("사용자 데이터 불러오기 오류:", error);
+        });
+    };
+
+    loadUserData();
+  }, [accessToken]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -174,13 +239,13 @@ const TTlayout = () => {
             <Link to="/about">스터디 관리해요</Link>
           </NavLi>
 
-          <NavProflie>
+          <NavProfile>
             <MailOutlineIcon
               style={{ fontSize: "30px" }}
               onClick={() => navigate("/message")}
             />
             <NavImg
-              src="/imgs/UserProfile.png"
+              src={userMyfo.profileImg}
               alt="User-Profile"
               onClick={() => navigate("/mypage/users/:userId/profile")}
             />
@@ -192,17 +257,15 @@ const TTlayout = () => {
             {isPopupOpen && (
               <PopupContainer>
                 <PopupContent>
-                  <PopupProfile>농부왕</PopupProfile>
+                  <PopupProfile>{userMyfo.name}</PopupProfile>
                   <PopupMyPage onClick={() => navigate("/mypage")}>
                     마이페이지
                   </PopupMyPage>
-                  <PopupLogout onClick={() => navigate("/login/sign_in")}>
-                    로그아웃
-                  </PopupLogout>
+                  <PopupLogout onClick={logout}>로그아웃</PopupLogout>
                 </PopupContent>
               </PopupContainer>
             )}
-          </NavProflie>
+          </NavProfile>
         </NavUl>
       </NavWrapper>
       <Container>

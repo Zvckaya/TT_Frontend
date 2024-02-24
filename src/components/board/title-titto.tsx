@@ -1,16 +1,9 @@
-import { useNavigate, useParams } from "react-router-dom";
+import React from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-
-type titleType = {
-  search: boolean;
-  title: string;
-  author: string;
-  date: string;
-};
 
 const TitleWrapper = styled.tr`
   height: 43px;
-
   border-bottom: 1px solid #bababa;
 
   &:hover {
@@ -30,35 +23,42 @@ const TitleWrapper = styled.tr`
     background-color: #8fa3ea;
     padding: 10px;
     color: white;
-    font-size: 13px;
+    font-size: 12px;
   }
   .end {
     border-radius: 5px;
     background-color: #3e68ff;
     color: white;
     padding: 10px;
-    font-size: 13px;
+    font-size: 12px;
   }
 `;
 
-const TittoTitle = ({ search, title, author, date }: titleType) => {
+export type TitleType = {
+  title: string;
+  author: string;
+  date: string;
+  postId: string;
+  status: string;
+};
+
+const TittoTitle = ({ title, author, date, postId, status }: TitleType) => {
   const { boardId } = useParams();
-  console.log(boardId);
   const navigate = useNavigate();
   return (
     <TitleWrapper
       onClick={() => {
-        navigate("/board/view/" + boardId + "/12321");
+        navigate(`/board/view/${boardId}/${postId}`);
       }}
     >
       <td>
-        <div className={search ? "search" : "end"}>
-          {search ? "모집중" : "완료"}
+        <div className={status === "RECRUITING" ? "search" : "end"}>
+          {status === "RECRUITING" ? "모집중" : "완료"}
         </div>
       </td>
       <td>{title}</td>
       <td>{author}</td>
-      <td>{date}</td>
+      <td style={{ fontSize: "9px" }}>{date}</td>
     </TitleWrapper>
   );
 };

@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { useNavigate } from "react-router-dom";
 
 const SliderWrap = styled.div`
   width: 100%;
@@ -22,21 +23,34 @@ const MaxSlider = ({ height }: { height: string }) => {
     infinite: true,
     speed: 500,
     autoplay: true,
-    autoplaySpeed: 5000,
+    autoplaySpeed: 3000,
   };
+  const navigate = useNavigate();
 
   return (
     <SliderWrap style={{ height }}>
       <Slider {...settings}>
         {/* 이미지 슬라이드 내용 추가 */}
         <div>
-          <Img1 src={"/imgs/slider/slider1.png"} alt="Slide 1" />
+          <Img1
+            src={"/imgs/slider/slider1.png"}
+            onClick={() => navigate("/slider/1/")}
+            alt="Slide 1"
+          />
         </div>
         <div>
-          <Img1 src="/imgs/slider/slider2.png" alt="Slide 2" />
+          <Img1
+            src="/imgs/slider/slider2.png"
+            onClick={() => navigate("/slider/2/")}
+            alt="Slide 2"
+          />
         </div>
         <div>
-          <Img1 src="/imgs/slider/slider3.png" alt="Slide 3" />
+          <Img1
+            src="/imgs/slider/slider3.png"
+            onClick={() => navigate("/slider/3/")}
+            alt="Slide 3"
+          />
         </div>
       </Slider>
     </SliderWrap>

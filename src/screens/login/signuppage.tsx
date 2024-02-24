@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const SignUpWrapper = styled.div`
   width: 800px;
@@ -113,6 +114,7 @@ const SignUpSelect = styled.select`
     color: #333;
   }
 `;
+
 const SignUpError = styled.div`
   font-size: 14px;
   color: #ff3d3d;
@@ -124,38 +126,90 @@ const SignUpError = styled.div`
 const SignUpPage = () => {
   const navigate = useNavigate();
   const [nickname, setNickname] = useState("");
-  const [studentId, setStudentId] = useState("");
+  const [studentNo, setStudentNo] = useState("");
   const [nicknameError, setNicknameError] = useState("");
-  const [studentIdError, setStudentIdError] = useState("");
-
-  const handleNicknameCheck = () => {
-    // 중복확인 로직 추가
-    const isNicknameDuplicate = true; // 지금은 항상 중복
-
-    if (isNicknameDuplicate) {
-      setNicknameError("이미 사용되는 닉네임입니다.");
-    } else {
-      setNicknameError("");
+  const [studentNoError, setStudentNoError] = useState("");
+  const accessToken = localStorage.getItem("accessToken");
+  console.log(accessToken);
+  const handleNicknameCheck = async () => {
+    try {
+      const res = await axios.get("/user/check/nickname", {
+        params: {
+          nickname: nickname,
+        },
+      });
+      if (res.status === 200) {
+        setNicknameError("");
+      }
+    } catch (error: any) {
+      if (error.response.status === 400) {
+        setNicknameError("이미 사용 중인 닉네임입니다.");
+      } else {
+        setNicknameError("서버 에러가 발생했습니다.");
+      }
     }
   };
 
-  const handleStudentIdCheck = () => {
-    // 중복확인 로직 추가
-    const isStudentIdDuplicate = true; // 지금은 항상 중복
-
-    if (isStudentIdDuplicate) {
-      setStudentIdError("이미 가입한 학번입니다.");
-    } else {
-      setStudentIdError("");
+  const handleStudentNoCheck = async () => {
+    try {
+      const res = await axios.get("/user/check/studentNo", {
+        params: {
+          studentNo: studentNo,
+        },
+      });
+      if (res.status === 200) {
+        setStudentNoError("");
+      }
+    } catch (error: any) {
+      if (error.response.status === 400) {
+        setStudentNoError("이미 사용 중인 학번입니다.");
+      } else {
+        setStudentNoError("서버 에러가 발생했습니다.");
+      }
     }
   };
 
-  const handleSubmit = (e: { preventDefault: () => void }) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    if (id === "nickname") {
+      setNickname(value);
+    } else if (id === "studentNo") {
+      setStudentNo(value);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // 제출 로직 나중에 추가
-    // 중복확인이 모두 완료되면 다음 페이지로 이동
-    navigate("/account/welcome");
+    try {
+      const formData = new FormData(e.target as HTMLFormElement);
+      const name = formData.get("name") as string;
+      // const nickname = formData.get("nickname") as string;
+      // const studentNo = formData.get("studentNo") as string;
+      const department = formData.get("department") as string;
+
+      const res = await axios.put(
+        "/api/user/signup",
+        {
+          name,
+          nickname,
+          studentNo,
+          department,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (res.status === 200) {
+        navigate("/login/welcome", { state: { nickname } });
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -184,7 +238,7 @@ const SignUpPage = () => {
             type="text"
             placeholder="닉네임을 입력해주세요."
             value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
+            onChange={handleChange}
           />
           <button type="button" onClick={handleNicknameCheck}>
             중복확인
@@ -194,24 +248,24 @@ const SignUpPage = () => {
         <SignUpLabel>학번</SignUpLabel>
         <SignUpInputContainer>
           <input
-            id="studentId"
+            id="studentNo"
             type="text"
             placeholder="학번을 입력해주세요."
-            value={studentId}
-            onChange={(e) => setStudentId(e.target.value)}
+            value={studentNo}
+            onChange={handleChange}
           />
-          <button type="button" onClick={handleStudentIdCheck}>
+          <button type="button" onClick={handleStudentNoCheck}>
             중복확인
           </button>
         </SignUpInputContainer>
-        <SignUpError>{studentIdError}</SignUpError>
+        <SignUpError>{studentNoError}</SignUpError>
         <SignUpLabel>소속</SignUpLabel>
-
-        <SignUpSelect>
-          <option value="option1">옵션 1</option>
-          <option value="option2">옵션 2</option>
+        <SignUpSelect name="department">
+          <option value="소프트웨어공학과">소프트웨어공학과</option>
+          <option value="컴퓨터공학과">컴퓨터공학과</option>
+          <option value="정보통신학과">정보통신학과</option>
+          <option value="인공지능학과">인공지능학과</option>
         </SignUpSelect>
-
         <SignUpBtnContainer>
           <button type="submit">다음으로</button>
         </SignUpBtnContainer>

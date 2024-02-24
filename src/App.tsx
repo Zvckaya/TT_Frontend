@@ -13,6 +13,7 @@ import SignUpPage from "./screens/login/signuppage";
 import WelcomePage from "./screens/login/welcomepage";
 import NotFound from "./screens/notfound";
 import axios from "axios";
+import SliderRoutes from "./routes/slider-route";
 
 axios.defaults.withCredentials = true;
 
@@ -43,6 +44,7 @@ const router = createBrowserRouter([
       { path: "mypage/*", element: <MyPageRoutes /> },
       { path: "message/*", element: <MessageRoutes /> },
       { path: "board/*", element: <BoardRoutes /> },
+      { path: "slider/*", element: <SliderRoutes /> }, // 임시
     ],
     errorElement: <NotFound />,
   },

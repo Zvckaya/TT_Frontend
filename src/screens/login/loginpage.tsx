@@ -179,7 +179,7 @@ const LoginPage = () => {
                 <span>카카오 로그인</span>
               </button>
               <button
-                type="submit"
+                type="button"
                 className="btn_login_naver"
                 onClick={() => navigate("/account/sign_up/:userId")}
               >
