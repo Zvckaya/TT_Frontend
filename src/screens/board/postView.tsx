@@ -429,7 +429,7 @@ const PostView = () => {
                 </button>
                 <button
                   className="modify"
-                  onClick={() => navigate(`/board/write/titto/${postId}`)} // 수정 폼을 따로 만들어야 되나?
+                  onClick={() => navigate(`/board/modify/titto/${postId}`)} // 수정 폼을 따로 만들어야 되나?
                 >
                   수정
                 </button>
