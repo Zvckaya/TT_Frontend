@@ -133,6 +133,7 @@ type Post = {
 const TittoBoard = ({ id, page }: BoardUrl) => {
   const { boardId } = useParams();
   const navigate = useNavigate();
+  const [pages, setPages] = useState(0);
   const [posts, setPosts] = useState<Post[]>([]);
   const accessToken = localStorage.getItem("accessToken");
 
@@ -149,9 +150,9 @@ const TittoBoard = ({ id, page }: BoardUrl) => {
         );
 
         console.log("Success:", response.data);
+        setPages(response.data.totalPages);
         const formattedPosts = response.data.content.map((post: Post) => ({
           ...post,
-
           createDate: new Date(
             new Date(post.createDate).getTime()
           ).toLocaleString(),
@@ -213,7 +214,7 @@ const TittoBoard = ({ id, page }: BoardUrl) => {
               글쓰기
             </div>
           </SubmitWrapper>
-          <NumberSelector id={id} page={page} pages={32} />
+          <NumberSelector id={id} page={page} pages={pages} />
         </MainDiv>
 
         <CategoryDiv>

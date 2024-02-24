@@ -8,7 +8,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   useEffect(() => {
     if (localStorage.getItem("accessToken")) {
-      //만약 로컬스토리지에 토큰이 있다면
+      console.log("hi");
       axios
         .get("/api/user/info", {
           headers: {
@@ -26,7 +26,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
             totlaExperience: res.data.totlaExperience,
             id: res.data.id,
           });
-          console.log(res.data);
+
           if (res.data.nickname === null) {
             navigate(`/login/sign_up/${userStore.user?.id}`);
           }
@@ -34,11 +34,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     }
   });
 
-  if (isLogin) {
-    return <>{children}</>;
-  } else {
-    return <Navigate to="/login/sign_in" />;
-  }
+  return { isLogin } ? <>{children}</> : <Navigate to="/login/sign_in" />;
 };
 
 export default ProtectedRoute;
