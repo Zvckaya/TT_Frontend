@@ -2,6 +2,7 @@ import styled from "styled-components";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import SmsIcon from "@mui/icons-material/Sms";
 import { useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -74,6 +75,7 @@ const CategoryDiv = styled.div`
 `;
 
 type QnaTitleProps = {
+  id: number;
   solve: boolean;
   title: string;
   detail: string;
@@ -86,6 +88,7 @@ type QnaTitleProps = {
 };
 
 const QnaTitle = ({
+  id,
   solve,
   title,
   detail,
@@ -94,15 +97,17 @@ const QnaTitle = ({
   userLv,
   userNick,
   view,
+
   comment,
 }: QnaTitleProps) => {
   const { boardId } = useParams();
+  const [Indetail, setDetail] = useState<string>("");
   console.log(boardId);
   const navigate = useNavigate();
   return (
     <Wrapper
       onClick={() => {
-        navigate("/board/view/" + boardId + "/12321");
+        navigate("/board/view/" + boardId + "/" + id);
       }}
     >
       <MainTitle>
@@ -115,7 +120,7 @@ const QnaTitle = ({
         <span className="date">{date}</span>
       </MainTitle>
       <DetailDiv>
-        <p>{detail}</p>
+        <div dangerouslySetInnerHTML={{ __html: detail }}></div>
       </DetailDiv>
       <UserInfo>
         <div style={{ display: "flex", alignItems: "center" }}>

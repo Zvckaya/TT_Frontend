@@ -2,7 +2,9 @@ import styled from "styled-components";
 import QnaCategoty from "../../components/board/qna-category";
 import QnaTitle from "../../components/board/title-qna";
 import NumberSelector from "../../components/board/number-selector";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export type boardUrl = {
   id: string;
@@ -112,9 +114,80 @@ const SubmitWrapper = styled.div`
   }
 `;
 
+type Post = {
+  id: number;
+  authrId: number;
+  authorNickname: string;
+  department: string;
+  status: string;
+  title: string;
+  content: string;
+  answerList: Array<string>;
+  viewCount: number;
+  accepted: false;
+};
+
+const changeDepartment = (department: string) => {
+  switch (department) {
+    case "HUMANITIES":
+      return "인문융합콘텐츠";
+    case "MANAGEMENT":
+      return "경영";
+    case "SOCIETY":
+      return "사회융합";
+    case "MEDIA_CONTENT":
+      return "미디어콘텐츠융합";
+    case "FUTURE_FUSION":
+      return "미래융합";
+    case "SOFTWARE":
+      return "소프트웨어융합";
+  }
+};
+
+const sliceContent = (content: string) => {
+  if (content.length > 50) {
+    return content.slice(0, 50) + "...";
+  } else {
+    return content;
+  }
+};
+
 const QnaBoard = ({ id, page }: boardUrl) => {
   const { boardId } = useParams();
+  const [searchParmas] = useSearchParams();
   const navigate = useNavigate();
+  const [pages, setPages] = useState(0);
+  const [posts, setPost] = useState<Post[]>([]);
+  const [searchValue, setSearchValue] = useState("");
+  const accessToken = localStorage.getItem("accessToken");
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      if (searchParmas.get("search")) {
+      } else if (searchParmas.get("status")) {
+      } else {
+        try {
+          const res = await axios.get("/api/questions/posts", {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+          console.log(res.data);
+          setPages(res.data.totalPages);
+          const formattedPost = res.data.content.map((post: Post) => ({
+            ...post,
+            content: sliceContent(post.content),
+            department: changeDepartment(post.department),
+          }));
+          setPost(formattedPost);
+        } catch (e) {
+          console.log(e);
+        }
+      }
+    };
+
+    fetchPost();
+  }, [page]);
 
   return (
     <Wrapper>
@@ -135,61 +208,21 @@ const QnaBoard = ({ id, page }: boardUrl) => {
             <button>검색</button>
           </SearchDiv>
           <PostWrapper>
-            <QnaTitle
-              solve={true}
-              title="VSCODE 에러"
-              date="12/20"
-              detail="vscode에러가 났어요... 내공겁니다. 도와주세요.."
-              category="소프트웨어 융합"
-              userLv={1}
-              userNick="JYLEE"
-              view={10}
-              comment={0}
-            />
-            <QnaTitle
-              solve={true}
-              title="VSCODE 에러"
-              date="12/20"
-              detail="vscode에러가 났어요... 내공겁니다. 도와주세요.."
-              category="소프트웨어 융합"
-              userLv={1}
-              userNick="JYLEE"
-              view={10}
-              comment={0}
-            />
-            <QnaTitle
-              solve={true}
-              title="VSCODE 에러"
-              date="12/20"
-              detail="vscode에러가 났어요... 내공겁니다. 도와주세요.."
-              category="소프트웨어 융합"
-              userLv={1}
-              userNick="JYLEE"
-              view={10}
-              comment={0}
-            />
-            <QnaTitle
-              solve={true}
-              title="VSCODE 에러"
-              date="12/20"
-              detail="vscode에러가 났어요... 내공겁니다. 도와주세요.."
-              category="소프트웨어 융합"
-              userLv={1}
-              userNick="JYLEE"
-              view={10}
-              comment={0}
-            />
-            <QnaTitle
-              solve={true}
-              title="VSCODE 에러"
-              date="12/20"
-              detail="vscode에러가 났어요... 내공겁니다. 도와주세요.."
-              category="소프트웨어 융합"
-              userLv={1}
-              userNick="JYLEE"
-              view={10}
-              comment={0}
-            />
+            {posts.map((post) => (
+              <QnaTitle
+                key={post.id}
+                id={post.id}
+                solve={post.status === "UNSOLVED" ? false : true}
+                title={post.title}
+                date={"12/20"}
+                detail={post.content}
+                category={post.department}
+                userLv={1}
+                userNick={post.authorNickname}
+                view={post.viewCount}
+                comment={post.answerList.length}
+              ></QnaTitle>
+            ))}
           </PostWrapper>
           <SubmitWrapper>
             <div
@@ -199,7 +232,7 @@ const QnaBoard = ({ id, page }: boardUrl) => {
               글쓰기
             </div>
           </SubmitWrapper>
-          <NumberSelector id={id} page={page} pages={7} />
+          <NumberSelector id={id} page={page} pages={pages} />
         </MainDiv>
 
         <CategoryDiv>

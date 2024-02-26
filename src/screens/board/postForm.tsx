@@ -4,6 +4,7 @@ import styled from "styled-components";
 import QuillEditor from "../../components/board/QuillEditor";
 import ReactQuill from "react-quill";
 import axios from "axios";
+import userStore from "../../stores/UserStore";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -131,95 +132,176 @@ const PostForm = () => {
   const [bType, setBType] = useState<string>("작성");
   const quillRef = useRef<ReactQuill | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>(
-    boardId === "titto" ? "STUDY" : ""
+    boardId === "titto" ? "STUDY" : "HUMANITIES"
   );
   const selectedTittoCategory = ["STUDY", "MENTOR", "MENTEE", "UHWOOLLEAM"];
-  interface CategoryMapping {
+  const selectedQnaCategory = [
+    "HUMANITIES",
+    "MANAGEMENT",
+    "SOCIETY",
+    "MEDIA_CONTENT",
+    "FUTURE_FUSION",
+    "SOFTWARE",
+  ];
+  interface tittoCategoryMapping {
     STUDY: string;
     MENTOR: string;
     MENTEE: string;
     UHWOOLLEAM: string;
   }
+  interface qnaCategoryMapping {
+    HUMANITIES: string;
+    MANAGEMENT: string;
+    SOCIETY: string;
+    MEDIA_CONTENT: string;
+    FUTURE_FUSION: string;
+    SOFTWARE: string;
+  }
 
-  const categoryMapping: CategoryMapping = {
+  const tittoCategoryMapping: tittoCategoryMapping = {
     STUDY: "스터디구해요",
     MENTOR: "멘토찾아요",
     MENTEE: "멘티찾아요",
     UHWOOLLEAM: "어울림찾아요",
   };
-  const selectedQnaCategory = [
-    "인문융합콘텐츠",
-    "경영",
-    "사회융합",
-    "미디어콘텐츠융합",
-    "미래융합",
-    "소프트웨어 융합",
-    "전체보기",
-  ];
-  // const [point, setPoint] = useState(0);
-  const [title, setTitles] = useState("제목");
+  const QnaCategoryMapping: qnaCategoryMapping = {
+    HUMANITIES: "인문융합콘텐츠",
+    MANAGEMENT: "경영",
+    SOCIETY: "사회융합",
+    MEDIA_CONTENT: "미디어콘텐츠융합",
+    FUTURE_FUSION: "미래융합",
+    SOFTWARE: "소프트웨어 융합",
+  };
+  const [title, setTitles] = useState("");
   const [authorProfile, setProfiles] = useState("");
   const [htmlContent, setContents] = useState("");
 
   useEffect(() => {
-    if (postId) {
-      setBType("수정");
-      axios
-        .get(`/api/matching-post/get/${postId}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        })
-        .then((response) => {
-          const postData = response.data;
-          console.log("postData:", postData);
-          setSelectedCategory(postData.category);
-          setTitles(postData.title);
-          setContents(postData.content);
-        })
-        .catch((error) => {
-          console.error("Error fetching post data:", error);
-        });
+    console.log(userStore.getUser()?.currentExperience);
+    if (boardId === "titto") {
+      if (postId) {
+        setBType("수정");
+        axios
+          .get(`/api/matching-post/get/${postId}`, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          })
+          .then((response) => {
+            const postData = response.data;
+            console.log("postData:", postData);
+            setSelectedCategory(postData.category);
+            setTitles(postData.title);
+            setContents(postData.content);
+          })
+          .catch((error) => {
+            console.error("Error fetching post data:", error);
+          });
+      }
+    } else {
+      if (postId) {
+        setBType("수정");
+        axios
+          .get(`/api/questions/${postId}`, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          })
+          .then((response) => {
+            const postData = response.data;
+            console.log("postData:", postData);
+            setSelectedCategory(postData.category);
+            setTitles(postData.title);
+            setContents(postData.content);
+          })
+          .catch((error) => {
+            console.error("Error fetching post data:", error);
+          });
+      }
     }
   }, [postId]);
 
   const handleSubmit = async () => {
-    const apiUrl = postId
-      ? `http://titto.duckdns.org/matching-post/update/${postId}`
-      : "http://titto.duckdns.org/matching-post/create";
+    if (boardId === "qna") {
+      const apiUrl = postId
+        ? `http://titto.duckdns.org/questions/update/${postId}`
+        : "http://titto.duckdns.org/questions/create";
 
-    const requestBody = {
-      category: selectedCategory,
-      title: title,
-      content: htmlContent,
-      status: "RECRUITING",
-    };
-    if (postId) {
-      try {
-        const response = await axios.put(apiUrl, requestBody, {
-          headers: {
-            "Content-Type": "application/json;charset=UTF-8",
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        });
-        console.log("Success:", response.data);
-        navigate(`/board/lists/${boardId}/1`);
-      } catch (error) {
-        console.error("Error:", error);
+      const requestBody = {
+        department: selectedCategory,
+        title: title,
+        content: htmlContent,
+        status: "UNSOLVED",
+        sendExperience: 0,
+        imgList: [],
+      };
+
+      if (postId) {
+        try {
+          const response = await axios.put(apiUrl, requestBody, {
+            headers: {
+              "Content-Type": "application/json;charset=UTF-8",
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          });
+          console.log("Success:", response.data);
+          navigate(`/board/lists/${boardId}/1`);
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      } else {
+        try {
+          const response = await axios.post(apiUrl, requestBody, {
+            headers: {
+              "Content-Type": "application/json;charset=UTF-8",
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          });
+
+          console.log("Success:", response.data);
+          navigate(`/board/lists/${boardId}/1`);
+        } catch (error) {
+          console.error("Error:", error);
+        }
       }
     } else {
-      try {
-        const response = await axios.post(apiUrl, requestBody, {
-          headers: {
-            "Content-Type": "application/json;charset=UTF-8",
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        });
+      const apiUrl = postId
+        ? `http://titto.duckdns.org/matching-post/update/${postId}`
+        : "http://titto.duckdns.org/matching-post/create";
 
-        console.log("Success:", response.data);
-        navigate(`/board/lists/${boardId}/1`);
-      } catch (error) {
-        console.error("Error:", error);
+      const requestBody = {
+        category: selectedCategory,
+        title: title,
+        content: htmlContent,
+        status: "RECRUITING",
+      };
+      if (postId) {
+        try {
+          const response = await axios.put(apiUrl, requestBody, {
+            headers: {
+              "Content-Type": "application/json;charset=UTF-8",
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          });
+          console.log("Success:", response.data);
+          navigate(`/board/lists/${boardId}/1`);
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      } else {
+        try {
+          const response = await axios.post(apiUrl, requestBody, {
+            headers: {
+              "Content-Type": "application/json;charset=UTF-8",
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          });
+
+          console.log("Success:", response.data);
+          navigate(`/board/lists/${boardId}/1`);
+        } catch (error) {
+          console.error("Error:", error);
+        }
       }
     }
   };
@@ -236,12 +318,12 @@ const PostForm = () => {
           {boardId === "titto"
             ? selectedTittoCategory.map((category) => (
                 <option key={category} value={category}>
-                  {categoryMapping[category as keyof CategoryMapping]}
+                  {tittoCategoryMapping[category as keyof tittoCategoryMapping]}
                 </option>
               ))
             : selectedQnaCategory.map((category) => (
                 <option key={category} value={category}>
-                  {categoryMapping[category as keyof CategoryMapping]}
+                  {QnaCategoryMapping[category as keyof qnaCategoryMapping]}
                 </option>
               ))}
         </select>
@@ -251,6 +333,7 @@ const PostForm = () => {
         제목 <span style={{ color: "red" }}>* </span>
         <input
           type="text"
+          placeholder="제목을 입력해주세요."
           value={title}
           onChange={(e) => {
             setTitles(e.target.value);

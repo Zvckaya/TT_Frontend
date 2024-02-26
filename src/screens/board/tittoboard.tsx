@@ -211,7 +211,6 @@ const TittoBoard = ({ id, page }: BoardUrl) => {
             }
           );
 
-          //console.log("Success:", response.data);
           setPages(response.data.totalPages);
           const formattedPosts = response.data.content.map((post: Post) => ({
             ...post,
@@ -228,6 +227,8 @@ const TittoBoard = ({ id, page }: BoardUrl) => {
 
     fetchPosts();
   }, [page]);
+
+  //url이 변경되면 다시 렌더링
 
   return (
     <Wrapper>
@@ -246,7 +247,7 @@ const TittoBoard = ({ id, page }: BoardUrl) => {
             />
             <button
               onClick={() => {
-                navigate(`/board/lists/titto/1/${searchValue}`);
+                navigate(`/board/lists/titto/1/?search=${searchValue}`);
                 window.location.reload();
               }}
             >
