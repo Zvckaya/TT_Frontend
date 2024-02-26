@@ -44,7 +44,7 @@ const router = createBrowserRouter([
       { path: "mypage/*", element: <MyPageRoutes /> },
       { path: "message/*", element: <MessageRoutes /> },
       { path: "board/*", element: <BoardRoutes /> },
-      { path: "slider/*", element: <SliderRoutes /> }, // 임시
+      { path: "slider/*", element: <SliderRoutes /> },
     ],
     errorElement: <NotFound />,
   },
