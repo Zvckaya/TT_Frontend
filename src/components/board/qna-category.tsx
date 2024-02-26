@@ -35,6 +35,8 @@ const CategorySelect = styled.div`
 
 const QnaCategoty = () => {
   return (
+    // 아래를 카테고리 선택 컴포넌트로 사용하면 됩니다.
+
     <CategoryWrapper>
       <CategoryTitle>카테고리</CategoryTitle>
       <CategorySelect>전체보기</CategorySelect>

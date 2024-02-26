@@ -8,6 +8,9 @@ import CommentDetail, {
 } from "../../components/board/comment-detail";
 import ReactQuill from "react-quill";
 import axios from "axios";
+import userStore from "../../stores/UserStore";
+import AnserDetail from "../../components/board/answer-detail";
+import { set } from "mobx";
 
 // 유저 정보 타입 정의
 export type UserInfo = {
@@ -17,6 +20,15 @@ export type UserInfo = {
   id: string;
   email: string;
   department?: string;
+};
+export type AnswerInfo = {
+  isEditable: boolean;
+  accepted: boolean;
+  authorId: string;
+  authorNickname: string;
+  content: string;
+  id: number;
+  postId: number;
 };
 
 // 스타일드 컴포넌트들 정의
@@ -30,12 +42,28 @@ const Wrapper = styled.div`
 const CategoryWrapper = styled.div`
   width: 100%;
   margin-top: 20px;
+  display: flex;
+  gap: 10px;
   .categoryBox {
     width: fit-content;
     padding: 10px;
     background-color: #3e68ff;
     border-radius: 5px;
     color: white;
+  }
+  .nSolve {
+    width: fit-content;
+    padding: 10px;
+    border: 1px solid #bababa;
+    border-radius: 5px;
+    color: #bababa;
+  }
+  .Solve {
+    width: fit-content;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    color: black;
   }
 `;
 
@@ -182,59 +210,43 @@ const SubmitWrapper = styled.div`
   }
 `;
 
-const PostView = () => {
-  const [title, setTitles] = useState("");
-  const [detail, setDetail] = useState("");
-  const [category, setCategory] = useState("");
-  const [status, setStatus] = useState("");
-  const [date, setDate] = useState("");
+type AnswerViewProps = {
+  accepted: boolean;
+  authorId: number;
+  authorNickname: string;
+  content: string;
+  createDate: string;
+  profile: string;
+  id: number;
+  department: string;
+  level: number;
+  title: string;
+  status: string;
+  viewCount: number;
+  answerList: AnswerInfo[];
+};
+
+const AnswerView = () => {
+  const [view, setView] = useState<AnswerViewProps>({
+    accepted: false,
+    authorId: 0,
+    authorNickname: "",
+    content: "",
+    profile: "",
+    createDate: "",
+    id: 0,
+    department: "",
+    level: 0,
+    title: "",
+    status: "",
+    viewCount: 0,
+    answerList: [],
+  });
   const { boardId = "default", postId } = useParams();
-  const [view, setView] = useState(13);
-  const [comment, setComment] = useState();
   const accessToken = localStorage.getItem("accessToken");
   const [reviewContent, setReviewContent] = useState("");
-  const [userMyfo, setMyInfo] = useState<UserInfo>({
-    name: "",
-    profileImg: "",
-    lv: 1,
-    id: "",
-    email: "",
-  }); // 로그인 유저 정보
-
-  const [userWriteInfo, setWriteInfo] = useState<UserInfo>({
-    name: "",
-    profileImg: "",
-    lv: 1,
-    id: "",
-    email: "",
-  }); // 글 유저 정보
-
-  interface statusMapping {
-    RECRUITING: string;
-    RECRUITMENT_COMPLETED: string;
-  }
-  const statusMapping: statusMapping = {
-    RECRUITING: "모집 중",
-    RECRUITMENT_COMPLETED: "완료",
-  };
-
-  interface CategoryMapping {
-    STUDY: string;
-    MENTOR: string;
-    MENTEE: string;
-    UHWOOLLEAM: string;
-  }
-
-  const categoryMapping: CategoryMapping = {
-    STUDY: "스터디구해요",
-    MENTOR: "멘토찾아요",
-    MENTEE: "멘티찾아요",
-    UHWOOLLEAM: "어울림찾아요",
-  };
-
   const navigate = useNavigate();
 
-  // Quill 에디터 모듈 정의
   const modules = useMemo(() => {
     return {
       toolbar: {
@@ -246,70 +258,13 @@ const PostView = () => {
     };
   }, []);
 
-  const loadUserData = () => {
-    axios
-      .get(`http://titto.duckdns.org/user/info`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          Accept: "application/json;charset=UTF-8",
-        },
-      })
-      .then((response) => {
-        const userData = response.data;
-        setMyInfo({
-          name: userData.nickname,
-          profileImg: userData.profileImg,
-          lv: 1,
-          id: userData.id,
-          email: userData.email,
-        });
-      })
-      .catch((error) => {
-        console.error("Error fetching user data:", error);
-      });
-  };
-
-  const loadPostData = () => {
-    axios
-      .get(`http://titto.duckdns.org/matching-post/get/${postId}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          Accept: "application/json;charset=UTF-8",
-        },
-      })
-      .then((response) => {
-        const data = response.data;
-        setTitles(data.title);
-        setDetail(data.content);
-        setCategory(data.category);
-        setDate(new Date(data.updateDate).toLocaleString("ko-KR"));
-        setView(data.viewCount);
-        setComment(data.reviewCount);
-        setStatus(data.status);
-        setWriteInfo({
-          name: data.authorNickName,
-          profileImg: data.profile,
-          lv: 1,
-          id: "id",
-          email: "email",
-        });
-      })
-      .catch((error) => {
-        console.error("Error fetching post data:", error);
-      });
-  };
-
-  useEffect(() => {
-    loadUserData();
-    loadPostData();
-  }, [accessToken, postId]);
-
-  const handleReviewSubmit = () => {
+  const handleAnswerSubmit = () => {
+    console.log(reviewContent);
     axios
       .post(
-        `/api/matching-board-review/create`,
+        `/api/answers/create`,
         {
-          postId: postId,
+          questionId: postId,
           content: reviewContent,
         },
         {
@@ -320,22 +275,11 @@ const PostView = () => {
           },
         }
       )
-      .then((response) => {
-        // 요청이 성공한 경우
-        console.log("리뷰가 성공적으로 작성되었습니다.");
-        console.log(
-          "리뷰 id, 코멘트:",
-          response.data.reviewAuthor,
-          response.data.content
-        );
-        loadPostData();
-        setReviewContent("");
-
-        window.location.reload(); // 일단..
+      .then((res) => {
+        window.location.reload();
       })
       .catch((error) => {
-        // 요청이 실패한 경우
-        console.error("리뷰 작성 중 에러가 발생했습니다:", error);
+        console.error("답변 등록 중 에러가 발생했습니다:", error);
       });
   };
 
@@ -345,17 +289,13 @@ const PostView = () => {
 
     // 사용자가 확인을 눌렀을 때만 삭제 요청을 보냄
     if (confirmDelete) {
-      const matchingPostIdToDelete = postId;
       axios
-        .delete(
-          `http://titto.duckdns.org/matching-post/delete/${matchingPostIdToDelete}`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-              Accept: "application/json;charset=UTF-8",
-            },
-          }
-        )
+        .delete(`/api/questions/${postId}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            Accept: "application/json;charset=UTF-8",
+          },
+        })
         .then((response) => {
           console.log("게시글이 성공적으로 삭제되었습니다.");
           navigate(`/board/lists/${boardId}/1`);
@@ -366,104 +306,118 @@ const PostView = () => {
     }
   };
 
-  const handleToggleStatus = () => {
-    const newStatus =
-      status === "RECRUITING" ? "RECRUITMENT_COMPLETED" : "RECRUITING";
-    setStatus(newStatus);
-
-    axios
-      .put(
-        `http://titto.duckdns.org/matching-post/update/${postId}`,
-        {
-          category: category,
-          title: title,
-          content: reviewContent,
-          status: newStatus,
-        },
-        {
+  const getPostData = async () => {
+    try {
+      const response = await axios
+        .get(`/api/questions/${postId}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
-            Accept: "application/json",
-            "Content-Type": "application/json;charset=UTF-8",
           },
-        }
-      )
-      .then((response) => {
-        console.log("상태가 성공적으로 업데이트되었습니다.");
-        console.log(response.data); // 서버 응답 확인
-      })
-      .catch((error) => {
-        console.error("상태 업데이트 중 에러가 발생했습니다:", error);
-      });
+        })
+        .then((res) => {
+          setView({
+            id: res.data.id,
+            title: res.data.title,
+            profile: res.data.profile,
+            content: res.data.content,
+            authorId: res.data.authorId,
+            authorNickname: res.data.authorNickname,
+            createDate: new Date(res.data.createDate).toLocaleDateString(),
+            department: res.data.department,
+            level: res.data.level,
+            status: res.data.status,
+            viewCount: res.data.viewCount,
+            accepted: res.data.accepted,
+            answerList: res.data.answerList,
+          });
+          console.log(res.data);
+        });
+    } catch (e) {
+      console.log(e);
+    }
   };
+
+  useEffect(() => {
+    getPostData();
+  }, []);
 
   return (
     <Wrapper>
       {/* 카테고리 표시 */}
       <CategoryWrapper>
-        <div className="categoryBox">
-          {categoryMapping[category as keyof CategoryMapping]}
+        <div className="categoryBox">카테고리</div>
+        <div className={view?.status == "UNSOLVED" ? "nSolve" : "Solve"}>
+          {view?.status == "UNSOLVED" ? "미해결" : "해결"}
         </div>
       </CategoryWrapper>
       {/* 제목 표시 */}
-      <TitleWrapper>{title}</TitleWrapper>
+      <TitleWrapper>{view?.title}.</TitleWrapper>
       {/* 프로필 표시 */}
       <ProfileWrapper>
         <div className="profileBox">
-          <img src={userWriteInfo.profileImg} alt="User-Profile" />
+          <img src={view.profile} alt="User-Profile" />
           <div className="userdiv">
-            <div className="nick">{userWriteInfo.name}</div>
+            <div className="nick">{view?.authorNickname}</div>
             <div className="lv">
-              LV.{userWriteInfo.lv} | {date}
+              LV.{view.level} | {view?.createDate}
             </div>
           </div>
         </div>
         {/* 로그인한 유저와 글 작성자가 같을 경우 수정/삭제 버튼 표시 */}
-        <div>
-          {userMyfo.name &&
-            userWriteInfo.name &&
-            userMyfo.name === userWriteInfo.name && (
-              <div>
-                <button className="btnfix" onClick={handleToggleStatus}>
-                  {statusMapping[status as keyof statusMapping]}
-                </button>
-                <button
-                  className="modify"
-                  onClick={() => navigate(`/board/modify/titto/${postId}`)} // 수정 폼을 따로 만들어야 되나?
-                >
-                  수정
-                </button>
-                <button onClick={handleDeletePost}>삭제</button>
-              </div>
-            )}
-        </div>
+        {userStore.getUser()?.id === view.authorId ? (
+          <div>
+            <div>
+              <button
+                className="modify"
+                onClick={() => navigate(`/board/modify/qna/${postId}`)}
+              >
+                수정
+              </button>
+              <button onClick={handleDeletePost}>삭제</button>
+            </div>
+          </div>
+        ) : (
+          <div></div>
+        )}
       </ProfileWrapper>
-      {/* 글 내용 표시 */}
+
       <DetailWrapper>
         {/* <div className="messageDiv">
           <div className="msgBtn">쪽지 보내기</div>// 버림
         </div> */}
         <div
           className="detail"
-          dangerouslySetInnerHTML={{ __html: detail }}
+          dangerouslySetInnerHTML={{ __html: view.content }}
         ></div>
       </DetailWrapper>
       {/* 조회수, 댓글 수 표시 */}
       <ViewWrapper>
         <div className="show-comment">
-          <VisibilityIcon style={{ fontSize: "0.8em" }} /> {view}{" "}
+          <VisibilityIcon style={{ fontSize: "0.8em" }} /> {view.viewCount}{" "}
           <div style={{ display: "inline-block", width: "10px" }}> </div>
-          <SmsIcon style={{ fontSize: "0.8em" }}></SmsIcon>
-          {comment}
+          <SmsIcon style={{ fontSize: "0.8em" }}></SmsIcon>{" "}
+          {view.answerList.length}
         </div>
       </ViewWrapper>
       {/* 댓글 표시 */}
       <CommentWrapper>
         <span style={{ fontWeight: "bold", fontSize: "20px" }}>
-          댓글 {comment}개
+          답변 {view.answerList.length}개
         </span>
       </CommentWrapper>
-      <CommentDetail postId={postId || ""} />
+      {view.answerList.map((answer) => (
+        <AnserDetail
+          key={answer.id}
+          isEditable={userStore.getUser()?.id === Number(view.authorId)}
+          accepted={answer.accepted}
+          authorId={answer.authorId}
+          authorNickname={answer.authorNickname}
+          content={answer.content}
+          id={answer.id}
+          postId={answer.postId}
+        />
+      ))}
+      {/* <AnserDetail /> */}
       {/* Quill 에디터 표시 */}
       <QuillWrapper>
         <ReactQuill
@@ -475,7 +429,7 @@ const PostView = () => {
       </QuillWrapper>
       {/* 등록 버튼 */}
       <SubmitWrapper>
-        <div className="btn" onClick={handleReviewSubmit}>
+        <div className="btn" onClick={handleAnswerSubmit}>
           등록
         </div>
       </SubmitWrapper>
@@ -483,4 +437,4 @@ const PostView = () => {
   );
 };
 
-export default PostView;
+export default AnswerView;
