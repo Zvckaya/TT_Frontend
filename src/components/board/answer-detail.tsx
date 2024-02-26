@@ -102,7 +102,10 @@ const AnserDetail = (answer: AnswerInfo) => {
           <img src={answer.profile} alt="User-Profile" />
           <div className="userdiv">
             <div className="nick">{answer.authorNickname}</div>
-            <div className="lv">LV.0</div>
+            <div className="lv">
+              LV.{answer.level} |{" "}
+              {new Date(answer.updateDate).toLocaleString("ko-KR")}
+            </div>
           </div>
         </div>
 

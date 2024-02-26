@@ -31,6 +31,8 @@ export type AnswerInfo = {
   id: number;
   postId: number;
   profile: string;
+  level: number;
+  updateDate: string;
 };
 
 // 스타일드 컴포넌트들 정의
@@ -225,6 +227,7 @@ type AnswerViewProps = {
   title: string;
   status: string;
   viewCount: number;
+
   answerList: AnswerInfo[];
 };
 
@@ -429,12 +432,14 @@ const AnswerView = () => {
       {view.answerList.map((answer) => (
         <AnserDetail
           key={answer.id}
+          updateDate={answer.updateDate}
           isEditable={userStore.getUser()?.id === Number(view.authorId)}
           isSolved={view.accepted}
           accepted={answer.accepted}
           authorId={answer.authorId}
           authorNickname={answer.authorNickname}
           content={answer.content}
+          level={answer.level}
           id={answer.id}
           postId={answer.postId}
           profile={answer.profile}
