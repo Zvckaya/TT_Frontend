@@ -175,7 +175,7 @@ const QnaBoard = ({ id, page }: boardUrl) => {
               Authorization: `Bearer ${accessToken}`,
             },
           });
-          console.log(res.data);
+
           setPages(res.data.totalPages);
           const formattedPost = res.data.content.map((post: Post) => ({
             ...post,
