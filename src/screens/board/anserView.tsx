@@ -23,12 +23,14 @@ export type UserInfo = {
 };
 export type AnswerInfo = {
   isEditable: boolean;
+  isSolved: boolean;
   accepted: boolean;
   authorId: string;
   authorNickname: string;
   content: string;
   id: number;
   postId: number;
+  profile: string;
 };
 
 // 스타일드 컴포넌트들 정의
@@ -297,11 +299,13 @@ const AnswerView = () => {
           },
         })
         .then((response) => {
-          console.log("게시글이 성공적으로 삭제되었습니다.");
+          alert("게시글이 성공적으로 삭제되었습니다.");
           navigate(`/board/lists/${boardId}/1`);
         })
         .catch((error) => {
-          console.error("게시글 삭제 중 에러가 발생했습니다:", error);
+          if (error.response.status === 400) {
+            alert("채택된 글은 삭제가 불가능 합니다");
+          }
         });
     }
   };
@@ -322,7 +326,7 @@ const AnswerView = () => {
             content: res.data.content,
             authorId: res.data.authorId,
             authorNickname: res.data.authorNickname,
-            createDate: new Date(res.data.createDate).toLocaleDateString(),
+            createDate: new Date(res.data.createDate).toLocaleString("ko-KR"),
             department: res.data.department,
             level: res.data.level,
             status: res.data.status,
@@ -337,6 +341,23 @@ const AnswerView = () => {
     }
   };
 
+  const changeDepartment = (department: string) => {
+    switch (department) {
+      case "HUMANITIES":
+        return "인문융합콘텐츠";
+      case "MANAGEMENT":
+        return "경영";
+      case "SOCIETY":
+        return "사회융합";
+      case "MEDIA_CONTENT":
+        return "미디어콘텐츠융합";
+      case "FUTURE_FUSION":
+        return "미래융합";
+      case "SOFTWARE":
+        return "소프트웨어융합";
+    }
+  };
+
   useEffect(() => {
     getPostData();
   }, []);
@@ -345,7 +366,7 @@ const AnswerView = () => {
     <Wrapper>
       {/* 카테고리 표시 */}
       <CategoryWrapper>
-        <div className="categoryBox">카테고리</div>
+        <div className="categoryBox">{changeDepartment(view.department)}</div>
         <div className={view?.status == "UNSOLVED" ? "nSolve" : "Solve"}>
           {view?.status == "UNSOLVED" ? "미해결" : "해결"}
         </div>
@@ -409,12 +430,14 @@ const AnswerView = () => {
         <AnserDetail
           key={answer.id}
           isEditable={userStore.getUser()?.id === Number(view.authorId)}
+          isSolved={view.accepted}
           accepted={answer.accepted}
           authorId={answer.authorId}
           authorNickname={answer.authorNickname}
           content={answer.content}
           id={answer.id}
           postId={answer.postId}
+          profile={answer.profile}
         />
       ))}
       {/* <AnserDetail /> */}

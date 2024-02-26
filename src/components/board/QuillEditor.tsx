@@ -1,3 +1,4 @@
+import { ref } from "firebase/storage";
 import { useMemo } from "react";
 import ReactQuill from "react-quill";
 import styled from "styled-components";
@@ -14,11 +15,44 @@ const Wrapper = styled.div`
   text-align: left;
 `;
 
+const imageHandler = () => {
+  const input = document.createElement("input");
+  input.setAttribute("type", "file");
+  input.setAttribute("accept", "image/*");
+  input.click();
+
+  input.addEventListener("change", async () => {
+    const file = input.files?.[0];
+    try {
+      //여기에 firesotorage에 이미지 업로드 하는 코드 작성
+      // const strageRef = ref()
+    } catch (error) {
+      console.log(error);
+    }
+  });
+};
+
 const QuilllEditor = ({
   quillRef,
   htmlContent,
   setHtmlContent,
 }: QuilEditorProps) => {
+  const imageHandler = () => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click();
+
+    input.addEventListener("change", async () => {
+      const editor = quillRef.current?.getEditor();
+      const file = input.files?.[0];
+      try {
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  };
+
   const modules = useMemo(() => {
     return {
       toolbar: {

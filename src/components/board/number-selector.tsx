@@ -62,13 +62,13 @@ const NumberSelector = ({ id, page, pages }: BoardUrl) => {
 
     if (newPage >= 1 && newPage <= pages) {
       setCurrentPage(newPage);
-      navigate(`/board/lists/titto/${newPage}`);
+      navigate(`/board/lists/${id}/${newPage}`);
     }
   };
 
   const handlePageClick = (pageNumber: number) => {
     setCurrentPage(pageNumber);
-    navigate(`/board/lists/titto/${pageNumber}`);
+    navigate(`/board/lists/${id}/${pageNumber}`);
   };
 
   const renderPageNumbers = () => {

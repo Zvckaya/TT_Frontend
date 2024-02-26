@@ -125,6 +125,8 @@ type Post = {
   answerList: Array<string>;
   viewCount: number;
   accepted: false;
+  createDate: string;
+  level: number;
 };
 
 const changeDepartment = (department: string) => {
@@ -166,6 +168,7 @@ const QnaBoard = ({ id, page }: boardUrl) => {
       if (searchParmas.get("search")) {
       } else if (searchParmas.get("status")) {
       } else {
+        console.log("갱신");
         try {
           const res = await axios.get("/api/questions/posts", {
             headers: {
@@ -214,10 +217,10 @@ const QnaBoard = ({ id, page }: boardUrl) => {
                 id={post.id}
                 solve={post.status === "UNSOLVED" ? false : true}
                 title={post.title}
-                date={"12/20"}
+                date={post.createDate.split("T")[0]}
                 detail={post.content}
                 category={post.department}
-                userLv={1}
+                userLv={post.level}
                 userNick={post.authorNickname}
                 view={post.viewCount}
                 comment={post.answerList.length}
