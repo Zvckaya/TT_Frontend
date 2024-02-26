@@ -2,84 +2,86 @@ import styled from "styled-components";
 import HBoarddetail from "../../components/home/board-detail";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { UserInfo } from "../board/postView";
+import { useNavigate, useParams } from "react-router-dom";
+
+// 유저 정보 타입 정의
+export type UserProfileInfo = {
+  profile: string;
+  name: string;
+  nickname: string;
+  studentNo: string;
+  department: string;
+  oneLineIntro: string;
+  selfIntro: string;
+  badges: string[];
+  totalExperience: number;
+  currentExperience: number;
+  countAnswer: number;
+  countAccept: number;
+  level: number;
+};
+
 const UserProfile = () => {
   const navigate = useNavigate();
+  const { userId } = useParams();
   const accessToken = localStorage.getItem("accessToken");
-  const [userMyfo, setMyInfo] = useState<UserInfo>({
+  const [userProfo, setProInfo] = useState<UserProfileInfo>({
+    profile: "",
     name: "",
-    profileImg: "",
-    lv: 1,
-    id: "",
-    email: "",
-    department: "소프트웨어공학과",
-  }); // 로그인 유저 정보
+    nickname: "",
+    studentNo: "",
+    department: "",
+    oneLineIntro: "",
+    selfIntro: "",
+    badges: [],
+    totalExperience: 0,
+    currentExperience: 0,
+    countAnswer: 0,
+    countAccept: 0,
+    level: 0,
+  }); // 프로필 유저 정보
+  const acceptanceRate = (userProfo.countAccept / userProfo.countAnswer) * 100;
+
   useEffect(() => {
-    const loadUserData = () => {
-      axios
-        .get("http://titto.duckdns.org/user/info", {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("/api/user/profile", {
+          params: {
+            userId: userId,
+          },
           headers: {
             Authorization: `Bearer ${accessToken}`,
-            Accept: "application/json;charset=UTF-8",
           },
-        })
-        .then((response) => {
-          const userData = response.data;
-          setMyInfo({
-            name: userData.nickname,
-            profileImg: userData.profileImg,
-            lv: 1,
-            id: userData.id,
-            email: userData.email,
-            department: userData.department,
-          });
-        })
-        .catch((error) => {
-          console.error("사용자 데이터 불러오기 오류:", error);
         });
+        setProInfo(response.data);
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+      }
     };
 
-    loadUserData();
+    fetchData();
   }, [accessToken]);
+
   return (
     <>
       <UserProfileWrapper>
         <UserProfileMainContainer>
           <UserProfileMainProfileContainer>
-            <img src={userMyfo.profileImg} alt="User-Profile"></img>
+            <img src={userProfo.profile} alt="User-Profile"></img>
             <UserProfileMainTextContainer>
-              <h1>{userMyfo.name}</h1>
-              <h2>LV.{userMyfo.lv}</h2>
-              <p>19학번</p>
-              <p>{userMyfo.department}</p>
+              <h1>{userProfo.nickname}</h1>
+              <h2>LV.{userProfo.level}</h2>
+              <p>{userProfo.studentNo}</p>
+              <p>{userProfo.department}</p>
             </UserProfileMainTextContainer>
           </UserProfileMainProfileContainer>
 
           <UserProfileMainIntroduceContainer>
             <UserProfileMainIntroduceTopContainer>
-              <h1>바다는 비에 젖지 않는다.</h1>
-              <p>
-                안녕하세요! 저는 컴퓨터 공학과 대학생으로, 프로그래밍과
-                알고리즘에 높은 흥미를 가지고 있습니다. 팀 프로젝트에서의 협업
-                능력과 문제 해결 능력을 키우며 새로운 기술과 도전에 열려있는
-                학생입니다. 안녕하세요! 저는 컴퓨터 공학과 대학생으로,
-                프로그래밍과 알고리즘에 높은 흥미를 가지고 있습니다. 팀
-                프로젝트에서의 협업 능력과 문제 해결 능력을 키우며 새로운 기술과
-                도전에 열려있는 학생입니다. 안녕하세요! 저는 컴퓨터 공학과
-                대학생으로, 프로그래밍과 알고리즘에 높은 흥미를 가지고 있습니다.
-                팀 프로젝트에서의 협업 능력과 문제 해결 능력을 키우며 새로운
-                기술과 도전에 열려있는 학생입니다. 안녕하세요! 저는 컴퓨터
-                공학과 대학생으로, 프로그래밍과 알고리즘에 높은 흥미를 가지고
-                있습니다. 팀 프로젝트에서의 협업 능력과 문제 해결 능력을 키우며
-                새로운 기술과 도전에 열려있는 학생입니다. 안녕하세요! 저는
-                컴퓨터 공학과 대학생으로, 프로그래밍과 알고리즘에 높은 흥미를
-                가지고 있습니다. 팀 프로젝트에서의 협업 능력과 문제 해결 능력을
-                키우며 새로운 기술과 도전에 열려있는 학생입니다. 안녕하세요!
-                저는 컴퓨터 공학과 대학생으로, 프로그래밍과 알고리즘에 높은
-                흥미를 가지고 있습니다. 팀 프로젝트에서의 협업 능력과 문제 해결
-                능력을 키우며 새로운 기술과 도전에 열려있는 학생입니다.
-              </p>
+              <h1
+                dangerouslySetInnerHTML={{ __html: userProfo.oneLineIntro }}
+              />
+              <p dangerouslySetInnerHTML={{ __html: userProfo.selfIntro }} />
             </UserProfileMainIntroduceTopContainer>
             <UserProfileMainIntroduceBottomContainer>
               <h1>보유 뱃지</h1>
@@ -96,13 +98,13 @@ const UserProfile = () => {
                 <Dealt />
               </Progress>
               <p>답변한 글 수</p>
-              <h1>총 17개 답변했어요.</h1>
+              <h1>총 {userProfo.countAnswer}개 답변했어요.</h1>
               <p>채택된 글 수</p>
-              <h1>총 7개 채택됐어요.</h1>
+              <h1>총 {userProfo.countAccept}개 채택됐어요.</h1>
             </div>
             <p>채택률</p>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <h1>53%</h1>
+              <h1>{acceptanceRate.toFixed(2)}%</h1>
               <div className="btn">쪽지 보내기</div>
             </div>
           </UserProfileMainLevelContainer>
@@ -111,6 +113,15 @@ const UserProfile = () => {
         <UserProfileSubContainer>
           <UserProfileStudyContainer>
             <p>채택된 글</p>
+            <UserProfileAcceptInner>
+              <HBoarddetail
+                category={0}
+                title="C++ 한솥밥 하실분구해요!"
+                detail="안녕하세요, 혹시 C++한솥밥 하실 분 계신가요? 저는 저번학기 김학수 C++ 1등 으로 수...."
+                view={41}
+                comment={4}
+              />
+            </UserProfileAcceptInner>
           </UserProfileStudyContainer>
           <UserProfileWritePostContainer>
             <p>작성한 글</p>
@@ -232,12 +243,13 @@ const UserProfileMainIntroduceContainer = styled.div`
 `;
 
 const UserProfileMainIntroduceTopContainer = styled.div`
-  margin-bottom: 50px;
+  margin-bottom: 40px;
 
   h1 {
     font-size: 24px;
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    height: 20px;
   }
 
   p {
@@ -339,4 +351,7 @@ const UserProfileWritePostInner = styled.div`
   padding: 20px;
 `;
 
+const UserProfileAcceptInner = styled.div`
+  padding: 10px;
+`;
 export default UserProfile;
