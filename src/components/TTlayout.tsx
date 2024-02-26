@@ -250,7 +250,7 @@ const TTlayout = () => {
             <NavImg
               src={userMyfo.profileImg}
               alt="User-Profile"
-              onClick={() => navigate("/mypage/users/:userId/profile")}
+              onClick={() => navigate(`/mypage/users/${userMyfo.id}/profile`)}
             />
 
             <MenuIcon
