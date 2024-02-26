@@ -131,6 +131,7 @@ const PostForm = () => {
   const { boardId = "default", postId } = useParams();
   const [bType, setBType] = useState<string>("작성");
   const quillRef = useRef<ReactQuill | null>(null);
+  const [exp, setExp] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState<string>(
     boardId === "titto" ? "STUDY" : "HUMANITIES"
   );
@@ -173,11 +174,9 @@ const PostForm = () => {
     SOFTWARE: "소프트웨어 융합",
   };
   const [title, setTitles] = useState("");
-  const [authorProfile, setProfiles] = useState("");
   const [htmlContent, setContents] = useState("");
 
   useEffect(() => {
-    console.log(userStore.getUser()?.currentExperience);
     if (boardId === "titto") {
       if (postId) {
         setBType("수정");
@@ -232,7 +231,7 @@ const PostForm = () => {
         title: title,
         content: htmlContent,
         status: "UNSOLVED",
-        sendExperience: 0,
+        sendExperience: exp,
         imgList: [],
       };
 
@@ -250,19 +249,21 @@ const PostForm = () => {
           console.error("Error:", error);
         }
       } else {
-        try {
-          const response = await axios.post(apiUrl, requestBody, {
+        axios
+          .post(apiUrl, requestBody, {
             headers: {
               "Content-Type": "application/json;charset=UTF-8",
               Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
             },
+          })
+          .then((res) => {
+            navigate(`/board/lists/${boardId}/1`);
+          })
+          .catch((err) => {
+            if (err.response.status === 400) {
+              alert("내공이 부족합니다!.");
+            }
           });
-
-          console.log("Success:", response.data);
-          navigate(`/board/lists/${boardId}/1`);
-        } catch (error) {
-          console.error("Error:", error);
-        }
       }
     } else {
       const apiUrl = postId
@@ -343,7 +344,11 @@ const PostForm = () => {
       {boardId === "qna" ? (
         <Point>
           내공 <span style={{ color: "red" }}>*</span>
-          <select>
+          <select
+            onChange={(e) => {
+              setExp(Number(e.target.value));
+            }}
+          >
             {Array.from({ length: 11 }, (_, i) => i * 10).map((num) => {
               return (
                 <option key={num} value={num}>

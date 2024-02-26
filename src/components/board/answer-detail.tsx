@@ -99,10 +99,10 @@ const AnserDetail = (answer: AnswerInfo) => {
     <Wrapper>
       <ProfileWrapper>
         <div className="profileBox">
-          <img src={userStore.getUser()?.profileImg} alt="User-Profile" />
+          <img src={answer.profile} alt="User-Profile" />
           <div className="userdiv">
             <div className="nick">{answer.authorNickname}</div>
-            <div className="lv">LV.0 </div>
+            <div className="lv">LV.0</div>
           </div>
         </div>
 
@@ -115,7 +115,7 @@ const AnserDetail = (answer: AnswerInfo) => {
           ) : (
             <div></div>
           )}
-          {answer.isEditable ? (
+          {answer.isEditable && !answer.isSolved ? (
             <div>
               <button>채택</button>
             </div>

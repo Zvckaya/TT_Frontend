@@ -102,7 +102,7 @@ const QnaTitle = ({
 }: QnaTitleProps) => {
   const { boardId } = useParams();
   const [Indetail, setDetail] = useState<string>("");
-  console.log(boardId);
+
   const navigate = useNavigate();
   return (
     <Wrapper
