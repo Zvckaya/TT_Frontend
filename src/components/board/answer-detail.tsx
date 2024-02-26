@@ -95,6 +95,34 @@ const AnserDetail = (answer: AnswerInfo) => {
     }
   };
 
+  const answerSelection = () => {
+    console.table(answer);
+
+    const confirm = window.confirm(
+      "정말 채택하시겠습니까? 채택하면 다른 답변은 채택할 수 없습니다."
+    );
+    if (confirm) {
+      const requst = {
+        questionId: answer.postId,
+        answerId: answer.id,
+      };
+
+      axios
+        .put(`/api/answers/accept/${answer.id}`, requst, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            Accept: "application/json;charset=UTF-8",
+          },
+        })
+        .then((res) => {
+          window.location.reload();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
   return (
     <Wrapper>
       <ProfileWrapper>
@@ -120,7 +148,7 @@ const AnserDetail = (answer: AnswerInfo) => {
           )}
           {answer.isEditable && !answer.isSolved ? (
             <div>
-              <button>채택</button>
+              <button onClick={answerSelection}>채택</button>
             </div>
           ) : (
             <div></div>
