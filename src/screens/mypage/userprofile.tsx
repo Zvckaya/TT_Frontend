@@ -3,9 +3,11 @@ import HBoarddetail from "../../components/home/board-detail";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import userStore from "../../stores/UserStore";
 
 // 유저 정보 타입 정의
 export type UserProfileInfo = {
+  // id: number | undefined;
   profile: string;
   name: string;
   nickname: string;
@@ -20,12 +22,41 @@ export type UserProfileInfo = {
   countAccept: number;
   level: number;
 };
-
+const changeDepartment = (department: string) => {
+  switch (department) {
+    case "HUMANITIES":
+      return "인문융합콘텐츠";
+    case "MANAGEMENT":
+      return "경영";
+    case "SOCIETY":
+      return "사회융합";
+    case "MEDIA_CONTENT":
+      return "미디어콘텐츠융합";
+    case "FUTURE_FUSION":
+      return "미래융합";
+    case "SOFTWARE":
+      return "소프트웨어융합";
+  }
+};
+export type ChosePost = {
+  matchingPostId: string;
+  title: string;
+  user: {
+    nickname: string;
+  };
+  createDate: string;
+  status: string;
+  content: string;
+  viewCount: number;
+  reviewCount: number;
+};
 const UserProfile = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
   const accessToken = localStorage.getItem("accessToken");
+  const [chooseList, setChooseList] = useState<ChosePost[]>([]);
   const [userProfo, setProInfo] = useState<UserProfileInfo>({
+    // id: 1,
     profile: "",
     name: "",
     nickname: "",
@@ -40,7 +71,26 @@ const UserProfile = () => {
     countAccept: 0,
     level: 0,
   }); // 프로필 유저 정보
-  const acceptanceRate = (userProfo.countAccept / userProfo.countAnswer) * 100;
+
+  const acceptanceRate =
+    userProfo.countAnswer > 0
+      ? (userProfo.countAccept / userProfo.countAnswer) * 100
+      : 0;
+
+  const getChooseBoardList = async () => {
+    try {
+      const res = await axios.get(`/api/posts/${userId}/all?page=0`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+
+      const formattedPosts = res.data.content.slice(0, 3);
+      setChooseList(formattedPosts);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,7 +108,7 @@ const UserProfile = () => {
         console.error("Error fetching user profile:", error);
       }
     };
-
+    getChooseBoardList();
     fetchData();
   }, [accessToken]);
 
@@ -72,7 +122,7 @@ const UserProfile = () => {
               <h1>{userProfo.nickname}</h1>
               <h2>LV.{userProfo.level}</h2>
               <p>{userProfo.studentNo}</p>
-              <p>{userProfo.department}</p>
+              <p>{changeDepartment(userProfo.department)}</p>
             </UserProfileMainTextContainer>
           </UserProfileMainProfileContainer>
 
@@ -104,8 +154,10 @@ const UserProfile = () => {
             </div>
             <p>채택률</p>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <h1>{acceptanceRate.toFixed(2)}%</h1>
+              <h1>{acceptanceRate.toFixed(1)}%</h1>
+              {/* {userStore.getUser()?.id !== userProfo.id && ( // 내 프로필이 아닐 때만 쪽지 보내기 버튼 보이기 */}
               <div className="btn">쪽지 보내기</div>
+              {/* )} */}
             </div>
           </UserProfileMainLevelContainer>
         </UserProfileMainContainer>
@@ -114,13 +166,18 @@ const UserProfile = () => {
           <UserProfileStudyContainer>
             <p>답변한 글</p>
             <UserProfileAcceptInner>
-              <HBoarddetail
-                category={"STUDY"}
-                title="C++ 한솥밥 하실분구해요!"
-                detail="안녕하세요, 혹시 C++한솥밥 하실 분 계신가요? 저는 저번학기 김학수 C++ 1등 으로 수...."
-                view={41}
-                comment={4}
-              />
+              {chooseList.map((post) => {
+                return (
+                  <HBoarddetail
+                    key={post.matchingPostId}
+                    category={"STUDY"}
+                    title={post.title}
+                    detail={post.content}
+                    view={post.viewCount}
+                    comment={post.reviewCount}
+                  ></HBoarddetail>
+                );
+              })}
             </UserProfileAcceptInner>
           </UserProfileStudyContainer>
           <UserProfileWritePostContainer>
