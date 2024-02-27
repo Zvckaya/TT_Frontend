@@ -4,7 +4,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import userStore from "../stores/UserStore";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const [isLogin, setIsLogin] = useState<boolean | null>(null);
+  const [isLogin, setIsLogin] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -13,6 +13,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
         const refreshToken = localStorage.getItem("refreshToken");
 
         if (refreshToken) {
+          console.log("리프레쉬토큰있음");
           const refData = {
             accessToken: localStorage.getItem("accessToken"),
             refreshToken: refreshToken,
@@ -50,6 +51,9 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
           if (userInfo.data.nickname === null) {
             navigate(`/login/sign_up/${userStore.user?.id}`);
           }
+        } else {
+          setIsLogin(false);
+          navigate("/login/sign_in");
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -59,14 +63,17 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     };
 
     fetchData();
-  }, []); // 빈 배열은 의존성이 없으므로 한 번만 실행됨
+  }, [isLogin]);
 
   if (isLogin === null) {
-    // 데이터 로딩 중인 경우에 대한 처리
     return null;
-  }
+  } else if (isLogin === false) {
+    navigate("/login/sign_in");
 
-  return <>{isLogin ? <>{children}</> : <Navigate to="/login/sign_in" />}</>;
+    return null;
+  } else {
+    return <>{children}</>;
+  }
 };
 
 export default ProtectedRoute;
