@@ -256,6 +256,8 @@ const AnswerView = () => {
     return {
       toolbar: {
         container: [
+          ["image"],
+
           [{ header: [1, 2, 3, 4, 5, false] }],
           ["bold", "underline"],
         ],
@@ -441,21 +443,27 @@ const AnswerView = () => {
           profile={answer.profile}
         />
       ))}
-      {/* Quill 에디터 표시 */}
-      <QuillWrapper>
-        <ReactQuill
-          modules={modules}
-          style={{ height: "200px" }}
-          value={reviewContent} // Quill 에디터의 값 설정
-          onChange={setReviewContent} // 사용자 입력 내용 업데이트
-        ></ReactQuill>
-      </QuillWrapper>
-      {/* 등록 버튼 */}
-      <SubmitWrapper>
-        <div className="btn" onClick={handleAnswerSubmit}>
-          등록
+
+      {userStore.getUser()?.nickname === view.authorNickname ? (
+        <div></div>
+      ) : (
+        <div>
+          <QuillWrapper>
+            <ReactQuill
+              modules={modules}
+              style={{ height: "200px" }}
+              value={reviewContent} // Quill 에디터의 값 설정
+              onChange={setReviewContent} // 사용자 입력 내용 업데이트
+            ></ReactQuill>
+          </QuillWrapper>
+          {/* 등록 버튼 */}
+          <SubmitWrapper>
+            <div className="btn" onClick={handleAnswerSubmit}>
+              등록
+            </div>
+          </SubmitWrapper>
         </div>
-      </SubmitWrapper>
+      )}
     </Wrapper>
   );
 };

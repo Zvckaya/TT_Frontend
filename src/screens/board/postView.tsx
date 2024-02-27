@@ -189,7 +189,7 @@ const PostView = () => {
   const [status, setStatus] = useState("");
   const [date, setDate] = useState("");
   const { boardId = "default", postId } = useParams();
-  const [view, setView] = useState(13);
+  const [view, setView] = useState(0);
   const [comment, setComment] = useState();
   const accessToken = localStorage.getItem("accessToken");
   const [reviewContent, setReviewContent] = useState("");
@@ -279,11 +279,13 @@ const PostView = () => {
       })
       .then((response) => {
         const data = response.data;
+        console.log("게시글 데이터:", data);
         setTitles(data.title);
         setDetail(data.content);
         setCategory(data.category);
         setDate(new Date(data.updateDate).toLocaleString("ko-KR"));
         setView(data.viewCount);
+
         setComment(data.reviewCount);
         setStatus(data.status);
         setWriteInfo({
