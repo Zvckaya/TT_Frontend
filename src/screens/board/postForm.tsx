@@ -8,7 +8,6 @@ import axios from "axios";
 import userStore from "../../stores/UserStore";
 import { set } from "firebase/database";
 
-
 const Wrapper = styled.div`
   width: 100%;
   margin-top: 10px;
@@ -228,7 +227,6 @@ const PostForm = () => {
   const handleSubmit = async () => {
     if (boardId === "qna") {
       const apiUrl = postId
-
         ? `/api/questions/update/${postId}`
         : "/api/questions/create";
       const requestBody = {

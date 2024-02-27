@@ -126,12 +126,14 @@ const SignUpError = styled.div`
 
 const SignUpPage = () => {
   const [errorcolor, setErrorcolor] = useState("red");
-
+  const [isCheckNick, setIsCheckNick] = useState(false);
+  const [isCheckStudentNo, setIsCheckStudentNo] = useState(false);
   const navigate = useNavigate();
   const [nickname, setNickname] = useState("");
   const [studentNo, setStudentNo] = useState("");
   const [nicknameError, setNicknameError] = useState("");
   const [studentNoError, setStudentNoError] = useState("");
+  const [name, setName] = useState("");
   const accessToken = localStorage.getItem("accessToken");
 
   const handleNicknameCheck = async () => {
@@ -143,6 +145,7 @@ const SignUpPage = () => {
       });
       if (res.status === 200) {
         setNicknameError("사용 가능한 닉네임입니다.");
+        setIsCheckNick(true);
         setErrorcolor("green");
       }
     } catch (error: any) {
@@ -163,6 +166,7 @@ const SignUpPage = () => {
       });
       if (res.status === 200) {
         setStudentNoError("사용 가능한 학번입니다.");
+        setIsCheckStudentNo(true);
         setErrorcolor("green");
       }
     } catch (error: any) {
@@ -180,40 +184,47 @@ const SignUpPage = () => {
       setNickname(value);
     } else if (id === "studentNo") {
       setStudentNo(value);
+    } else if (id === "name") {
+      setName(value);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isCheckNick === false) {
+      alert("닉네임 중복확인을 해주세요.");
+    } else if (isCheckStudentNo === false) {
+      alert("학번 중복확인을 해주세요.");
+    } else {
+      try {
+        const formData = new FormData(e.target as HTMLFormElement);
+        //const name = formData.get("name") as string;
+        // const nickname = formData.get("nickname") as string;
+        // const studentNo = formData.get("studentNo") as string;
+        const department = formData.get("department") as string;
 
-    try {
-      const formData = new FormData(e.target as HTMLFormElement);
-      const name = formData.get("name") as string;
-      // const nickname = formData.get("nickname") as string;
-      // const studentNo = formData.get("studentNo") as string;
-      const department = formData.get("department") as string;
-
-      const res = await axios.put(
-        "/api/user/signup",
-        {
-          name,
-          nickname,
-          studentNo,
-          department,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
+        const res = await axios.put(
+          "/api/user/signup",
+          {
+            name,
+            nickname,
+            studentNo,
+            department,
           },
-        }
-      );
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-      if (res.status === 200) {
-        navigate("/login/welcome", { state: { nickname } });
+        if (res.status === 200) {
+          navigate("/login/welcome", { state: { nickname } });
+        }
+      } catch (error) {
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
     }
   };
 
@@ -233,6 +244,7 @@ const SignUpPage = () => {
             id="name"
             type="text"
             placeholder="이름을 입력해주세요."
+            onChange={handleChange}
             style={{ borderRadius: "7px" }}
           />
         </SignUpInputContainer>
@@ -266,10 +278,12 @@ const SignUpPage = () => {
         <SignUpError color={errorcolor}>{studentNoError}</SignUpError>
         <SignUpLabel>소속</SignUpLabel>
         <SignUpSelect name="department">
-          <option value="소프트웨어공학과">소프트웨어공학과</option>
-          <option value="컴퓨터공학과">컴퓨터공학과</option>
-          <option value="정보통신학과">정보통신학과</option>
-          <option value="인공지능학과">인공지능학과</option>
+          <option value="HUMANITIES">인문융합콘텐츠</option>
+          <option value="MANAGEMENT">경영</option>
+          <option value="SOCIETY">사회융합</option>
+          <option value="MEDIA_CONTENT">미디어콘텐츠융합</option>
+          <option value="FUTURE_FUSION">미래융합</option>
+          <option value="SOFTWARE">소프트웨어융합</option>
         </SignUpSelect>
         <SignUpBtnContainer>
           <button type="submit">다음으로</button>

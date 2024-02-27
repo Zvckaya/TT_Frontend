@@ -55,6 +55,7 @@ const FooterLogo = styled.h1`
   img {
     width: 60px;
     height: 60px;
+    padding: 5px;
   }
 `;
 
