@@ -112,7 +112,7 @@ const UserProfile = () => {
 
         <UserProfileSubContainer>
           <UserProfileStudyContainer>
-            <p>채택된 글</p>
+            <p>답변한 글</p>
             <UserProfileAcceptInner>
               <HBoarddetail
                 category={0}
