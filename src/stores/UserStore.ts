@@ -8,6 +8,7 @@ type User = {
   currentExperience: number;
   totlaExperience: number;
   id: number;
+  level: number;
 };
 
 class UserStore {
