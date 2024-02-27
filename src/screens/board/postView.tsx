@@ -279,7 +279,6 @@ const PostView = () => {
       })
       .then((response) => {
         const data = response.data;
-        console.log("게시글 데이터:", data);
         setTitles(data.title);
         setDetail(data.content);
         setCategory(data.category);
