@@ -5,6 +5,7 @@ import QuillEditor from "../../components/board/QuillEditor";
 import ReactQuill from "react-quill";
 import axios from "axios";
 import userStore from "../../stores/UserStore";
+import { set } from "firebase/database";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -132,6 +133,7 @@ const PostForm = () => {
   const [bType, setBType] = useState<string>("작성");
   const quillRef = useRef<ReactQuill | null>(null);
   const [exp, setExp] = useState(0);
+  const [status, setStatus] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>(
     boardId === "titto" ? "STUDY" : "HUMANITIES"
   );
@@ -208,10 +210,11 @@ const PostForm = () => {
           })
           .then((response) => {
             const postData = response.data;
-            console.log("postData:", postData);
-            setSelectedCategory(postData.category);
+            setSelectedCategory(postData.department);
             setTitles(postData.title);
             setContents(postData.content);
+            setExp(postData.sendExperience);
+            setStatus(postData.status);
           })
           .catch((error) => {
             console.error("Error fetching post data:", error);
@@ -223,7 +226,7 @@ const PostForm = () => {
   const handleSubmit = async () => {
     if (boardId === "qna") {
       const apiUrl = postId
-        ? `http://titto.duckdns.org/questions/update/${postId}`
+        ? `http://titto.duckdns.org/questions/${postId}`
         : "http://titto.duckdns.org/questions/create";
 
       const requestBody = {
@@ -237,12 +240,22 @@ const PostForm = () => {
 
       if (postId) {
         try {
-          const response = await axios.put(apiUrl, requestBody, {
-            headers: {
-              "Content-Type": "application/json;charset=UTF-8",
-              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          console.log(title, htmlContent, selectedCategory);
+          const response = await axios.put(
+            `http://titto.duckdns.org/questions/${postId}`,
+            {
+              title: title,
+              content: htmlContent,
+              department: selectedCategory,
             },
-          });
+            {
+              headers: {
+                "Content-Type": "application/json;charset=UTF-8",
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                Accept: `application/json;charset=UTF-8`,
+              },
+            }
+          );
           console.log("Success:", response.data);
           navigate(`/board/lists/${boardId}/1`);
         } catch (error) {
