@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { TITTOPost } from "./board/tittoboard";
 import { QNAPost } from "./board/qnaboard";
+import userStore from "../stores/UserStore";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -120,9 +121,11 @@ const HomeScreen = () => {
           <img
             src="/imgs/myIcon.svg"
             alt="My Icon"
-            onClick={() => navigate("/board/lists/titto/")}
+            onClick={() =>
+              navigate(`/mypage/users/${userStore.getUser()?.id}/profile`)
+            }
           />
-          티칭공간
+          마이페이지
         </MyIcon>
       </IconMenu>
       <BoardWrapper>
