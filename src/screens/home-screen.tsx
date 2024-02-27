@@ -3,6 +3,7 @@ import MaxSlider from "../components/slider-max";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import HBoarddetail from "../components/home/board-detail";
 import { Navigate, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -54,6 +55,8 @@ const BoardDetail = styled.div`
 `;
 
 const HomeScreen = () => {
+  useEffect(() => {}, []);
+
   const navigate = useNavigate();
   return (
     <Wrapper>
