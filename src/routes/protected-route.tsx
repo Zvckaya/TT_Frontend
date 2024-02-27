@@ -13,7 +13,6 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
         const refreshToken = localStorage.getItem("refreshToken");
 
         if (refreshToken) {
-          console.log("리프레쉬토큰있음");
           const refData = {
             accessToken: localStorage.getItem("accessToken"),
             refreshToken: refreshToken,
