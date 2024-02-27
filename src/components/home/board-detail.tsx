@@ -1,34 +1,26 @@
 import styled from "styled-components";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import SmsIcon from "@mui/icons-material/Sms";
-
-enum Category {
-  MentorSearch,
-  MenteeSearch,
-  MakeFriends,
-  Question,
-}
+import { useEffect, useState } from "react";
 
 type HBoardType = {
-  category: Category;
+  category: string;
   title: string;
   detail: string;
   view: number;
   comment: number;
 };
 
-const categoryToString = (category: Category): string => {
+const categoryToString = (category: string) => {
   switch (category) {
-    case Category.MentorSearch:
+    case "MENTOR":
       return "멘토찾아요";
-    case Category.MenteeSearch:
+    case "MENTEE":
       return "멘티찾아요";
-    case Category.MakeFriends:
+    case "UHWOOLLEAM":
       return "어울려요";
-    case Category.Question:
-      return "질문있어요";
-    default:
-      return "";
+    case "STUDY":
+      return "스터디";
   }
 };
 
@@ -71,13 +63,25 @@ const HBoardDetail = ({
   view,
   comment,
 }: HBoardType) => {
+  const [htmldetail, setDetail] = useState<string>("");
+
+  useEffect(() => {
+    if (detail.length > 50) {
+      setDetail(detail.substring(0, 50) + "...");
+    }
+  });
+
   return (
     <BoardWrapper>
       <span className="category">{categoryToString(category)}</span>
       <br />
       <span className="title">{title}</span>
       <br />
-      <span className="detail">{detail}</span>
+
+      <div
+        className="detail"
+        dangerouslySetInnerHTML={{ __html: htmldetail }}
+      ></div>
       <br />
       <div className="show-comment">
         <VisibilityIcon style={{ fontSize: "0.8em" }} /> {view}{" "}

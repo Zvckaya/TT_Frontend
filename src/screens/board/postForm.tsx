@@ -180,6 +180,7 @@ const PostForm = () => {
   const [htmlContent, setContents] = useState("");
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     if (boardId === "titto") {
       if (postId) {
         setBType("수정");

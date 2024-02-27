@@ -115,7 +115,7 @@ const UserProfile = () => {
             <p>답변한 글</p>
             <UserProfileAcceptInner>
               <HBoarddetail
-                category={0}
+                category={"STUDY"}
                 title="C++ 한솥밥 하실분구해요!"
                 detail="안녕하세요, 혹시 C++한솥밥 하실 분 계신가요? 저는 저번학기 김학수 C++ 1등 으로 수...."
                 view={41}
@@ -127,42 +127,42 @@ const UserProfile = () => {
             <p>작성한 글</p>
             <UserProfileWritePostInner>
               <HBoarddetail
-                category={0}
+                category={"STUDY"}
                 title="C++ 한솥밥 하실분구해요!"
                 detail="안녕하세요, 혹시 C++한솥밥 하실 분 계신가요? 저는 저번학기 김학수 C++ 1등 으로 수...."
                 view={41}
                 comment={4}
               />
               <HBoarddetail
-                category={0}
+                category={"STUDY"}
                 title="C++ 한솥밥 하실분구해요!"
                 detail="안녕하세요, 혹시 C++한솥밥 하실 분 계신가요? 저는 저번학기 김학수 C++ 1등 으로 수...."
                 view={41}
                 comment={4}
               />
               <HBoarddetail
-                category={0}
+                category={"STUDY"}
                 title="C++ 한솥밥 하실분구해요!"
                 detail="안녕하세요, 혹시 C++한솥밥 하실 분 계신가요? 저는 저번학기 김학수 C++ 1등 으로 수...."
                 view={41}
                 comment={4}
               />{" "}
               <HBoarddetail
-                category={0}
+                category={"STUDY"}
                 title="C++ 한솥밥 하실분구해요!"
                 detail="안녕하세요, 혹시 C++한솥밥 하실 분 계신가요? 저는 저번학기 김학수 C++ 1등 으로 수...."
                 view={41}
                 comment={4}
               />
               <HBoarddetail
-                category={0}
+                category={"STUDY"}
                 title="C++ 한솥밥 하실분구해요!"
                 detail="안녕하세요, 혹시 C++한솥밥 하실 분 계신가요? 저는 저번학기 김학수 C++ 1등 으로 수...."
                 view={41}
                 comment={4}
               />
               <HBoarddetail
-                category={0}
+                category={"STUDY"}
                 title="C++ 한솥밥 하실분구해요!"
                 detail="안녕하세요, 혹시 C++한솥밥 하실 분 계신가요? 저는 저번학기 김학수 C++ 1등 으로 수...."
                 view={41}
