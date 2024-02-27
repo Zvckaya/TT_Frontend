@@ -5,7 +5,9 @@ const Footer = () => {
     <FooterWrapper>
       <FooterUl>
         <FooterLi>
-          <FooterLogo>TITTO</FooterLogo>
+          <FooterLogo>
+            <img src={"/imgs/logo2.png"} alt="logo" />
+          </FooterLogo>
           <FooterText> Copyright ©TITTO. All Rights Reserved.</FooterText>
         </FooterLi>
       </FooterUl>
@@ -50,6 +52,10 @@ const FooterLogo = styled.h1`
   font-weight: bold;
   color: #3e68ff;
   margin: 0 20px;
+  img {
+    width: 60px;
+    height: 60px;
+  }
 `;
 
 export default Footer;

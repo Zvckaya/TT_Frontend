@@ -168,7 +168,6 @@ const QnaBoard = ({ id, page }: boardUrl) => {
       if (searchParmas.get("search")) {
       } else if (searchParmas.get("status")) {
       } else {
-        console.log("갱신");
         try {
           const res = await axios.get("/api/questions/posts", {
             headers: {

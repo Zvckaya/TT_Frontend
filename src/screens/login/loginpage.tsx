@@ -92,10 +92,10 @@ const LoginBtnContainer = styled.div`
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const KAKAO_CLIENT_ID = import.meta.env.VITE_KAKAO_CLIENT_ID;
+  const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
+  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 
-  const KAKAO_AUTH_URL =
-    "https://kauth.kakao.com/oauth/authorize?client_id=07fae5134b01bb2d04d6325ce2e54ecd&redirect_uri=http://localhost:8080/login/oauth2/code/kakao&response_type=code";
-  //추후에 .env 파일로 옮기기
   const handleKakaoLogin = () => {
     try {
       window.location.href = KAKAO_AUTH_URL;

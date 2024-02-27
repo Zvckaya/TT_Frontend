@@ -150,7 +150,7 @@ const TTlayout = () => {
   const logout = () => {
     axios
       .post(
-        "http://titto.duckdns.org/oauth/logout",
+        "/api/oauth/logout",
         {
           accessToken: accessToken,
           refreshToken: refreshToken,
@@ -179,7 +179,7 @@ const TTlayout = () => {
   useEffect(() => {
     const loadUserData = () => {
       axios
-        .get("http://titto.duckdns.org/user/info", {
+        .get("/api/user/info", {
           headers: {
             Authorization: `Bearer ${accessToken}`,
             Accept: "application/json;charset=UTF-8",

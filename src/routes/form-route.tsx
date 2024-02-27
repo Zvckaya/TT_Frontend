@@ -1,6 +1,5 @@
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import PostForm from "../screens/board/postForm";
 import PostView from "../screens/board/postView";
 import AnswerView from "../screens/board/anserView";
 
