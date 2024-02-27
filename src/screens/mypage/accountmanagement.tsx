@@ -7,6 +7,7 @@ import { UserInfo } from "../board/postView";
 
 const AccountManagementContent = ({}) => {
   const [nicknameError, setNicknameError] = useState("");
+  const [studentNoError, setStudentNoError] = useState("");
   const navigate = useNavigate();
   const [newNickname, setNewNickname] = useState("");
   const [isEditing, setEditing] = useState(false);
@@ -39,13 +40,10 @@ const AccountManagementContent = ({}) => {
       );
 
       if (response.status === 200) {
-        // 중복 없음 -> 닉네임 업데이트 수행
-        updateNickname();
         setNicknameError("사용 가능한 닉네임입니다.");
       }
     } catch (error: any) {
       if (error.response.status === 409) {
-        // 중복 있음 -> 메시지 표시
         setNicknameError("닉네임 중복입니다.");
       } else {
         console.error("Error checking nickname availability:", error);
@@ -55,9 +53,7 @@ const AccountManagementContent = ({}) => {
 
   const handleSaveClick = async () => {
     await updateNickname();
-    setEditing((prevEditing) => !prevEditing);
-    loadUserData(); // 닉네임이 업데이트된 후 사용자 정보를 다시 불러옴
-    setNicknameError("");
+    window.location.reload();
   };
   const updateNickname = () => {
     axios
@@ -74,10 +70,7 @@ const AccountManagementContent = ({}) => {
       )
       .then((response) => {
         if (response.data === "updated successfully") {
-          console.log("Nickname updated successfully");
-          loadUserData(); // 닉네임 업데이트 후 사용자 정보 다시 불러오기
-        } else {
-          console.log("Failed to update nickname");
+          loadUserData();
         }
       })
       .catch((error) => {
@@ -138,7 +131,36 @@ const AccountManagementContent = ({}) => {
                 </button>
               </InputContainer>
               <FormError>{nicknameError}</FormError>
+
+              <p className="subname">
+                학번 <span style={{ color: "red" }}>*</span>
+              </p>
+              <InputContainer>
+                <input
+                  type="text"
+                  id="studentNo"
+                  placeholder={userMyfo.name}
+                  onChange={(e) => setNewNickname(e.target.value)}
+                />
+                <button onClick={handleCheckAvailability} className="checkbtn">
+                  중복 확인
+                </button>
+              </InputContainer>
+              <FormError>{studentNoError}</FormError>
+
+              <p className="subname">
+                학과 <span style={{ color: "red" }}>*</span>
+              </p>
+              <SelectDepartMent name="department">
+                <option value="HUMANITIES">인문융합콘텐츠</option>
+                <option value="MANAGEMENT">경영</option>
+                <option value="SOCIETY">사회융합</option>
+                <option value="MEDIA_CONTENT">미디어콘텐츠융합</option>
+                <option value="FUTURE_FUSION">미래융합</option>
+                <option value="SOFTWARE">소프트웨어융합</option>
+              </SelectDepartMent>
             </FormContainer>
+
             <div className="btn-container">
               <button onClick={handleSaveClick} className="btn">
                 저장
@@ -331,6 +353,21 @@ const FormError = styled.div`
   font-weight: bold;
   margin-top: 20px;
   margin-bottom: 20px;
+`;
+
+const SelectDepartMent = styled.select`
+  padding: 10px;
+  font-size: 16px;
+  width: 30%;
+  border: 1px solid #bababa;
+  border-radius: 7px;
+  cursor: pointer;
+  outline: none;
+
+  option {
+    background-color: #fff;
+    color: #333;
+  }
 `;
 
 export default AccountManagementContent;

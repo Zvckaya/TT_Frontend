@@ -91,6 +91,11 @@ const SignUpBtnContainer = styled.div`
     border-radius: 7px;
     cursor: pointer;
     margin-top: 20px;
+
+    &:disabled {
+      background-color: #bababa;
+      cursor: not-allowed;
+    }
   }
 `;
 
@@ -134,6 +139,8 @@ const SignUpPage = () => {
   const [nicknameError, setNicknameError] = useState("");
   const [studentNoError, setStudentNoError] = useState("");
   const [name, setName] = useState("");
+  const [oneLineIntro, setOneLineIntro] = useState("");
+  const [selfIntro, setSelfIntro] = useState("");
   const accessToken = localStorage.getItem("accessToken");
 
   const handleNicknameCheck = async () => {
@@ -183,24 +190,57 @@ const SignUpPage = () => {
     if (id === "nickname") {
       setNickname(value);
     } else if (id === "studentNo") {
-      setStudentNo(value);
+      const onlyNums = value.replace(/[^0-9]/g, "");
+      if (onlyNums.length <= 9) {
+        setStudentNo(onlyNums);
+      }
     } else if (id === "name") {
       setName(value);
     }
   };
 
+  const handleSaveProfile = () => {
+    const accessToken = localStorage.getItem("accessToken");
+
+    axios
+      .put(
+        "/api/user/profile",
+        {
+          oneLineIntro,
+          selfIntro,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json;charset=UTF-8",
+          },
+        }
+      )
+      .then((response) => {})
+      .catch((error) => {
+        console.error("Error saving profile:", error);
+      });
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (isCheckNick === false) {
+
+    if (!name || !nickname || !studentNo || !oneLineIntro || !selfIntro) {
+      alert("모든 입력란을 채워주세요.");
+      return;
+    }
+    if (nickname.length === 0 || studentNo.length !== 9) {
+      alert("닉네임과 학번을 올바르게 입력해주세요.");
+      alert("학번은 9글자입니다.");
+      return;
+    }
+    if (isCheckNick === false || isCheckNick === null) {
       alert("닉네임 중복확인을 해주세요.");
-    } else if (isCheckStudentNo === false) {
+    } else if (isCheckStudentNo === false || isCheckStudentNo === null) {
       alert("학번 중복확인을 해주세요.");
     } else {
       try {
         const formData = new FormData(e.target as HTMLFormElement);
-        //const name = formData.get("name") as string;
-        // const nickname = formData.get("nickname") as string;
-        // const studentNo = formData.get("studentNo") as string;
         const department = formData.get("department") as string;
 
         const res = await axios.put(
@@ -221,6 +261,7 @@ const SignUpPage = () => {
 
         if (res.status === 200) {
           navigate("/login/welcome", { state: { nickname } });
+          handleSaveProfile();
         }
       } catch (error) {
         console.error(error);
@@ -276,6 +317,31 @@ const SignUpPage = () => {
           </button>
         </SignUpInputContainer>
         <SignUpError color={errorcolor}>{studentNoError}</SignUpError>
+        <SignUpLabel>한 줄 소개</SignUpLabel>
+        <SignUpInputContainer>
+          <input
+            id="oneLineIntro"
+            type="text"
+            placeholder="한 줄 소개를 입력해주세요."
+            value={oneLineIntro}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              setOneLineIntro(event.target.value)
+            }
+          />
+        </SignUpInputContainer>
+        <SignUpLabel>자기소개</SignUpLabel>
+        <SignUpInputContainer>
+          <input
+            id="selfIntro"
+            type="text"
+            placeholder="자기소개를 입력해주세요."
+            value={selfIntro}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              setSelfIntro(event.target.value)
+            }
+          />
+        </SignUpInputContainer>
+
         <SignUpLabel>소속</SignUpLabel>
         <SignUpSelect name="department">
           <option value="HUMANITIES">인문융합콘텐츠</option>
@@ -286,7 +352,14 @@ const SignUpPage = () => {
           <option value="SOFTWARE">소프트웨어융합</option>
         </SignUpSelect>
         <SignUpBtnContainer>
-          <button type="submit">다음으로</button>
+          <button
+            type="submit"
+            disabled={
+              !isCheckNick || !isCheckStudentNo || !oneLineIntro || !selfIntro
+            }
+          >
+            다음으로
+          </button>
         </SignUpBtnContainer>
       </SignUpForm>
     </SignUpWrapper>

@@ -90,9 +90,10 @@ const Container = styled.div`
 const PopupContainer = styled.div`
   position: absolute;
   top: 100%;
-  width: 130px;
+  width: 150px;
   background-color: #fff;
   border: 2px solid #ccc;
+
   border-radius: 10px;
   padding: 20px;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
@@ -107,7 +108,7 @@ const PopupContent = styled.div`
 
 const PopupProfile = styled.div`
   justify-content: center;
-  font-size: 20px;
+  font-size: em;
   font-weight: bold;
 `;
 
@@ -264,7 +265,7 @@ const TTlayout = () => {
                   <PopupMyPage onClick={() => navigate("/mypage")}>
                     마이페이지
                   </PopupMyPage>
-                   <PopupLogout onClick={logout}>로그아웃</PopupLogout>
+                  <PopupLogout onClick={logout}>로그아웃</PopupLogout>
                 </PopupContent>
               </PopupContainer>
             )}
