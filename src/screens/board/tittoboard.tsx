@@ -126,7 +126,7 @@ const SubmitWrapper = styled.div`
   }
 `;
 
-type Post = {
+export type TITTOPost = {
   matchingPostId: string;
   title: string;
   user: {
@@ -134,6 +134,9 @@ type Post = {
   };
   createDate: string;
   status: string;
+  content: string;
+  viewCount: number;
+  reviewCount: number;
 };
 
 const TittoBoard = ({ id, page }: BoardUrl) => {
@@ -141,7 +144,7 @@ const TittoBoard = ({ id, page }: BoardUrl) => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [pages, setPages] = useState(0);
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<TITTOPost[]>([]);
   const [searchValue, setSearchValue] = useState("");
   const accessToken = localStorage.getItem("accessToken");
 
@@ -162,12 +165,14 @@ const TittoBoard = ({ id, page }: BoardUrl) => {
           );
 
           setPages(response.data.totalPages);
-          const formattedPosts = response.data.content.map((post: Post) => ({
-            ...post,
-            createDate: new Date(
-              new Date(post.createDate).getTime()
-            ).toLocaleString(),
-          }));
+          const formattedPosts = response.data.content.map(
+            (post: TITTOPost) => ({
+              ...post,
+              createDate: new Date(
+                new Date(post.createDate).getTime()
+              ).toLocaleString(),
+            })
+          );
           setPosts(formattedPosts);
         } catch (error) {
           console.error(error);
@@ -185,12 +190,14 @@ const TittoBoard = ({ id, page }: BoardUrl) => {
             }
           );
           setPages(response.data.totalPages);
-          const formattedPosts = response.data.content.map((post: Post) => ({
-            ...post,
-            createDate: new Date(
-              new Date(post.createDate).getTime()
-            ).toLocaleString(),
-          }));
+          const formattedPosts = response.data.content.map(
+            (post: TITTOPost) => ({
+              ...post,
+              createDate: new Date(
+                new Date(post.createDate).getTime()
+              ).toLocaleString(),
+            })
+          );
           setPosts(formattedPosts);
         } catch (error) {
           console.error(error);
@@ -207,12 +214,14 @@ const TittoBoard = ({ id, page }: BoardUrl) => {
           );
 
           setPages(response.data.totalPages);
-          const formattedPosts = response.data.content.map((post: Post) => ({
-            ...post,
-            createDate: new Date(
-              new Date(post.createDate).getTime()
-            ).toLocaleString(),
-          }));
+          const formattedPosts = response.data.content.map(
+            (post: TITTOPost) => ({
+              ...post,
+              createDate: new Date(
+                new Date(post.createDate).getTime()
+              ).toLocaleString(),
+            })
+          );
           setPosts(formattedPosts);
         } catch (error) {
           console.error(error);

@@ -114,7 +114,7 @@ const SubmitWrapper = styled.div`
   }
 `;
 
-type Post = {
+export type QNAPost = {
   id: number;
   authrId: number;
   authorNickname: string;
@@ -159,7 +159,7 @@ const QnaBoard = ({ id, page }: boardUrl) => {
   const [searchParmas] = useSearchParams();
   const navigate = useNavigate();
   const [pages, setPages] = useState(0);
-  const [posts, setPost] = useState<Post[]>([]);
+  const [posts, setPost] = useState<QNAPost[]>([]);
   const [searchValue, setSearchValue] = useState("");
   const accessToken = localStorage.getItem("accessToken");
 
@@ -176,7 +176,7 @@ const QnaBoard = ({ id, page }: boardUrl) => {
           });
 
           setPages(res.data.totalPages);
-          const formattedPost = res.data.content.map((post: Post) => ({
+          const formattedPost = res.data.content.map((post: QNAPost) => ({
             ...post,
             content: sliceContent(post.content),
             department: changeDepartment(post.department),
