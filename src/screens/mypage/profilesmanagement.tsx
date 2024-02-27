@@ -20,7 +20,7 @@ const ProfileManagementContent = () => {
 
     axios
       .put(
-        "http://titto.duckdns.org/user/profile",
+        "/api/user/profile",
         {
           oneLineIntro,
           selfIntro,
