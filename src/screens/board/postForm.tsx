@@ -4,8 +4,10 @@ import styled from "styled-components";
 import QuillEditor from "../../components/board/QuillEditor";
 import ReactQuill from "react-quill";
 import axios from "axios";
+
 import userStore from "../../stores/UserStore";
 import { set } from "firebase/database";
+
 
 const Wrapper = styled.div`
   width: 100%;
@@ -190,7 +192,6 @@ const PostForm = () => {
           })
           .then((response) => {
             const postData = response.data;
-            console.log("postData:", postData);
             setSelectedCategory(postData.category);
             setTitles(postData.title);
             setContents(postData.content);
@@ -210,6 +211,7 @@ const PostForm = () => {
           })
           .then((response) => {
             const postData = response.data;
+
             setSelectedCategory(postData.department);
             setTitles(postData.title);
             setContents(postData.content);
@@ -226,9 +228,9 @@ const PostForm = () => {
   const handleSubmit = async () => {
     if (boardId === "qna") {
       const apiUrl = postId
-        ? `http://titto.duckdns.org/questions/${postId}`
-        : "http://titto.duckdns.org/questions/create";
 
+        ? `/api/questions/update/${postId}`
+        : "/api/questions/create";
       const requestBody = {
         department: selectedCategory,
         title: title,
@@ -248,6 +250,7 @@ const PostForm = () => {
               content: htmlContent,
               department: selectedCategory,
             },
+
             {
               headers: {
                 "Content-Type": "application/json;charset=UTF-8",
@@ -280,8 +283,8 @@ const PostForm = () => {
       }
     } else {
       const apiUrl = postId
-        ? `http://titto.duckdns.org/matching-post/update/${postId}`
-        : "http://titto.duckdns.org/matching-post/create";
+        ? `/api/matching-post/update/${postId}`
+        : "/api/matching-post/create";
 
       const requestBody = {
         category: selectedCategory,
@@ -297,7 +300,6 @@ const PostForm = () => {
               Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
             },
           });
-          console.log("Success:", response.data);
           navigate(`/board/lists/${boardId}/1`);
         } catch (error) {
           console.error("Error:", error);
@@ -311,7 +313,6 @@ const PostForm = () => {
             },
           });
 
-          console.log("Success:", response.data);
           navigate(`/board/lists/${boardId}/1`);
         } catch (error) {
           console.error("Error:", error);

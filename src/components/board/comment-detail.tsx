@@ -128,7 +128,7 @@ const CommentDetail = ({ postId }: { postId: string }) => {
 
   const loadUserData = () => {
     axios
-      .get(`http://titto.duckdns.org/user/info`, {
+      .get(`/api/user/info`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
           Accept: "application/json;charset=UTF-8",
@@ -152,7 +152,7 @@ const CommentDetail = ({ postId }: { postId: string }) => {
   const fetchComments = async () => {
     try {
       const response = await axios.get(
-        `http://titto.duckdns.org/matching-board-review/get/${postId}`,
+        `/api/matching-board-review/get/${postId}`,
         {
           headers: {
             accept: "application/json;charset=UTF-8",
@@ -172,18 +172,13 @@ const CommentDetail = ({ postId }: { postId: string }) => {
     const confirmDelete = window.confirm("댓글을 삭제하시겠습니까?");
     if (confirmDelete) {
       axios
-        .delete(
-          `http://titto.duckdns.org/matching-board-review/delete/${reviewIdToDelete}`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-              Accept: "application/json;charset=UTF-8",
-            },
-          }
-        )
+        .delete(`/api/matching-board-review/delete/${reviewIdToDelete}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            Accept: "application/json;charset=UTF-8",
+          },
+        })
         .then((response) => {
-          console.log("댓글이 성공적으로 삭제되었습니다.");
-
           setComments((prevComments) =>
             prevComments.filter(
               (comment) => comment.reviewId !== reviewIdToDelete
@@ -204,7 +199,7 @@ const CommentDetail = ({ postId }: { postId: string }) => {
   ) => {
     await axios
       .put(
-        `http://titto.duckdns.org/matching-board-review/update/${reviewId}`,
+        `/api/matching-board-review/update/${reviewId}`,
         {
           postId: postId,
           reviewId: reviewId,

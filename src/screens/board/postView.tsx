@@ -248,7 +248,7 @@ const PostView = () => {
 
   const loadUserData = () => {
     axios
-      .get(`http://titto.duckdns.org/user/info`, {
+      .get(`/api/user/info`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
           Accept: "application/json;charset=UTF-8",
@@ -271,7 +271,7 @@ const PostView = () => {
 
   const loadPostData = () => {
     axios
-      .get(`http://titto.duckdns.org/matching-post/get/${postId}`, {
+      .get(`/api/matching-post/get/${postId}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
           Accept: "application/json;charset=UTF-8",
@@ -323,13 +323,6 @@ const PostView = () => {
         }
       )
       .then((response) => {
-        // 요청이 성공한 경우
-        console.log("리뷰가 성공적으로 작성되었습니다.");
-        console.log(
-          "리뷰 id, 코멘트:",
-          response.data.reviewAuthor,
-          response.data.content
-        );
         loadPostData();
         setReviewContent("");
 
@@ -349,17 +342,13 @@ const PostView = () => {
     if (confirmDelete) {
       const matchingPostIdToDelete = postId;
       axios
-        .delete(
-          `http://titto.duckdns.org/matching-post/delete/${matchingPostIdToDelete}`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-              Accept: "application/json;charset=UTF-8",
-            },
-          }
-        )
+        .delete(`/api/matching-post/delete/${matchingPostIdToDelete}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            Accept: "application/json;charset=UTF-8",
+          },
+        })
         .then((response) => {
-          console.log("게시글이 성공적으로 삭제되었습니다.");
           navigate(`/board/lists/${boardId}/1`);
         })
         .catch((error) => {
@@ -375,7 +364,7 @@ const PostView = () => {
 
     axios
       .put(
-        `http://titto.duckdns.org/matching-post/update/${postId}`,
+        `/api/matching-post/update/${postId}`,
         {
           category: category,
           title: title,
@@ -390,10 +379,7 @@ const PostView = () => {
           },
         }
       )
-      .then((response) => {
-        console.log("상태가 성공적으로 업데이트되었습니다.");
-        console.log(response.data); // 서버 응답 확인
-      })
+      .then((response) => {})
       .catch((error) => {
         console.error("상태 업데이트 중 에러가 발생했습니다:", error);
       });
@@ -431,7 +417,7 @@ const PostView = () => {
                 </button>
                 <button
                   className="modify"
-                  onClick={() => navigate(`/board/modify/titto/${postId}`)} // 수정 폼을 따로 만들어야 되나?
+                  onClick={() => navigate(`/board/modify/titto/${postId}`)}
                 >
                   수정
                 </button>
@@ -442,9 +428,6 @@ const PostView = () => {
       </ProfileWrapper>
       {/* 글 내용 표시 */}
       <DetailWrapper>
-        {/* <div className="messageDiv">
-          <div className="msgBtn">쪽지 보내기</div>// 버림
-        </div> */}
         <div
           className="detail"
           dangerouslySetInnerHTML={{ __html: detail }}
@@ -471,8 +454,8 @@ const PostView = () => {
         <ReactQuill
           modules={modules}
           style={{ height: "200px" }}
-          value={reviewContent} // Quill 에디터의 값 설정
-          onChange={setReviewContent} // 사용자 입력 내용 업데이트
+          value={reviewContent}
+          onChange={setReviewContent}
         ></ReactQuill>
       </QuillWrapper>
       {/* 등록 버튼 */}

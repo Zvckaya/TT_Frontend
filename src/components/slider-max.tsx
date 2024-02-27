@@ -7,14 +7,14 @@ import { useNavigate } from "react-router-dom";
 const SliderWrap = styled.div`
   width: 100%;
   border-radius: 10px;
-  overflow: hidden; /* 이미지가 벗어나는 부분을 숨김 */
+  overflow: hidden;
   margin-top: 20px;
 `;
 
 const Img1 = styled.img`
   width: 100%;
-  height: 100%; /* 이미지가 100%의 높이를 가지도록 설정 */
-  object-fit: cover; /* 이미지가 확대/축소되어 영역을 채우도록 설정 */
+  height: 100%;
+  object-fit: cover;
   border-radius: 10px;
 `;
 
@@ -31,7 +31,6 @@ const MaxSlider = () => {
   return (
     <SliderWrap>
       <Slider {...settings}>
-        {/* 이미지 슬라이드 내용 추가 */}
         <div>
           <Img1
             src={"/imgs/slider/slider1.png"}

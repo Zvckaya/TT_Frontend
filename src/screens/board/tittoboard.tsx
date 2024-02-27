@@ -13,7 +13,6 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import axios from "axios";
-import { set } from "mobx";
 
 type BoardUrl = {
   id: string;
@@ -162,7 +161,6 @@ const TittoBoard = ({ id, page }: BoardUrl) => {
             }
           );
 
-          console.log("Success:", response.data);
           setPages(response.data.totalPages);
           const formattedPosts = response.data.content.map((post: Post) => ({
             ...post,
@@ -175,7 +173,6 @@ const TittoBoard = ({ id, page }: BoardUrl) => {
           console.error(error);
         }
       } else if (searchParams.has("category")) {
-        console.log(searchParams.get("category"));
         try {
           const response = await axios.get(
             `/api/matching-board/category?page=${
@@ -187,8 +184,6 @@ const TittoBoard = ({ id, page }: BoardUrl) => {
               },
             }
           );
-
-          console.log("Success:", response.data);
           setPages(response.data.totalPages);
           const formattedPosts = response.data.content.map((post: Post) => ({
             ...post,
@@ -203,7 +198,7 @@ const TittoBoard = ({ id, page }: BoardUrl) => {
       } else {
         try {
           const response = await axios.get(
-            `http://titto.duckdns.org/matching-board/all?page=${page - 1}`,
+            `/api/matching-board/all?page=${page - 1}`,
             {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -227,8 +222,6 @@ const TittoBoard = ({ id, page }: BoardUrl) => {
 
     fetchPosts();
   }, [page]);
-
-  //url이 변경되면 다시 렌더링
 
   return (
     <Wrapper>

@@ -29,7 +29,7 @@ const AccountManagementContent = ({}) => {
 
     try {
       const response = await axios.get(
-        `http://titto.duckdns.org/user/check/nickname?nickname=${newNickname}`,
+        `/api/user/check/nickname?nickname=${newNickname}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -62,7 +62,7 @@ const AccountManagementContent = ({}) => {
   const updateNickname = () => {
     axios
       .put(
-        `http://titto.duckdns.org/user/update`,
+        `/api/user/update`,
         { newNickname },
         {
           headers: {
@@ -73,7 +73,6 @@ const AccountManagementContent = ({}) => {
         }
       )
       .then((response) => {
-        console.log(response.data);
         if (response.data === "updated successfully") {
           console.log("Nickname updated successfully");
           loadUserData(); // 닉네임 업데이트 후 사용자 정보 다시 불러오기
@@ -88,7 +87,7 @@ const AccountManagementContent = ({}) => {
 
   const loadUserData = () => {
     axios
-      .get(`http://titto.duckdns.org/user/info`, {
+      .get(`/api/user/info`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
           Accept: "application/json;charset=UTF-8",

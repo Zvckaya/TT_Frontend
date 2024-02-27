@@ -15,7 +15,6 @@ const ProfileManagementContent = () => {
     };
   }, []);
   const handleSaveProfile = () => {
-    // 프로필을 저장하는 요청 보내기
     const accessToken = localStorage.getItem("accessToken");
 
     axios
@@ -33,14 +32,11 @@ const ProfileManagementContent = () => {
         }
       )
       .then((response) => {
-        console.log(response.data);
-        // 프로필 저장 성공 시 작업 수행
-        // 예를 들어, 사용자에게 성공 메시지 표시하거나 페이지를 다른 경로로 이동하는 등의 작업 수행 가능
+        window.alert("프로필이 저장되었습니다.");
+        window.location.reload();
       })
       .catch((error) => {
         console.error("Error saving profile:", error);
-        // 프로필 저장 실패 시 작업 수행
-        // 예를 들어, 사용자에게 실패 메시지 표시하거나 에러 처리 등의 작업 수행 가능
       });
   };
 
@@ -57,7 +53,7 @@ const ProfileManagementContent = () => {
                 modules={modules}
                 value={oneLineIntro}
                 onChange={setOneLineIntro}
-                placeholder="한줄 소개를 입력해주세요."
+                placeholder={"한줄 소개를 입력하세요."}
                 style={{
                   height: "65px",
                 }}
@@ -71,6 +67,7 @@ const ProfileManagementContent = () => {
                 modules={modules}
                 value={selfIntro}
                 onChange={setSelfIntro}
+                placeholder={"자기 소개글을 입력하세요."}
                 style={{ height: "200px" }}
               ></ReactQuill>
             </QuillWrapper>

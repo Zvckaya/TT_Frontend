@@ -339,7 +339,6 @@ const AnswerView = () => {
             accepted: res.data.accepted,
             answerList: res.data.answerList,
           });
-          console.log(res.data);
         });
     } catch (e) {
       console.log(e);
@@ -408,9 +407,6 @@ const AnswerView = () => {
       </ProfileWrapper>
 
       <DetailWrapper>
-        {/* <div className="messageDiv">
-          <div className="msgBtn">쪽지 보내기</div>// 버림
-        </div> */}
         <div
           className="detail"
           dangerouslySetInnerHTML={{ __html: view.content }}
@@ -447,6 +443,7 @@ const AnswerView = () => {
           profile={answer.profile}
         />
       ))}
+
       {userStore.getUser()?.nickname === view.authorNickname ? (
         <div></div>
       ) : (
