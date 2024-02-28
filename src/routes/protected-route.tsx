@@ -64,6 +64,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   };
 
   const checkLevelAndUpdate = async (currentExp: number, userLevel: number) => {
+    console.log("체크 레벨업");
     const accessToken = localStorage.getItem("accessToken");
     const userId = userStore.getUser()?.id;
 
