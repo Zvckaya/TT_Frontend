@@ -6,7 +6,7 @@ type User = {
   socialType: string;
   profileImg: string;
   currentExperience: number;
-  totlaExperience: number;
+  totalExperience: number;
   id: number;
   level: number;
 };
