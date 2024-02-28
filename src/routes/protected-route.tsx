@@ -41,14 +41,11 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
           socialType: userInfo.data.socialType,
           profileImg: userInfo.data.profileImg,
           currentExperience: userInfo.data.currentExperience,
-          totlaExperience: userInfo.data.totlaExperience,
+          totalExperience: userInfo.data.totalExperience,
           id: userInfo.data.id,
           level: userInfo.data.level,
         });
-        checkLevelAndUpdate(
-          userInfo.data.currentExperience,
-          userInfo.data.level
-        );
+        checkLevelAndUpdate(userInfo.data.totalExperience, userInfo.data.level);
 
         setIsLogin(true);
 

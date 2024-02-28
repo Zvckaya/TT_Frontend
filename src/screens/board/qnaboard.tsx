@@ -157,6 +157,7 @@ const sliceContent = (content: string) => {
 const QnaBoard = ({ id, page }: boardUrl) => {
   const { boardId } = useParams();
   const [searchParmas] = useSearchParams();
+  const [status, setStatus] = useState(0);
   const navigate = useNavigate();
   const [pages, setPages] = useState(0);
   const [posts, setPost] = useState<QNAPost[]>([]);
@@ -166,7 +167,61 @@ const QnaBoard = ({ id, page }: boardUrl) => {
   useEffect(() => {
     const fetchPost = async () => {
       if (searchParmas.get("search")) {
+        const searchKey = searchParmas.get("search");
+        const res = await axios.get(
+          `/api/questions/search?page=${page - 1}&keyWord=${searchKey}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        setPages(res.data.totalPages);
+        const formattedPost = res.data.content.map((post: QNAPost) => ({
+          ...post,
+          content: sliceContent(post.content),
+          department: changeDepartment(post.department),
+        }));
+        setPost(formattedPost);
       } else if (searchParmas.get("status")) {
+        const status = searchParmas.get("status");
+        if (status === "UNSOLVED") {
+          setStatus(1);
+        } else {
+          setStatus(2);
+        }
+        const res = await axios.get(
+          `/api/questions/status/${status}?page=${page - 1}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        setPages(res.data.totalPages);
+        const formattedPost = res.data.content.map((post: QNAPost) => ({
+          ...post,
+          content: sliceContent(post.content),
+          department: changeDepartment(post.department),
+        }));
+        setPost(formattedPost);
+      } else if (searchParmas.get("category")) {
+        const category = searchParmas.get("category");
+        const res = await axios.get(
+          `/api/questions/category/${category}?page=${page - 1}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        setPages(res.data.totalPages);
+        const formattedPost = res.data.content.map((post: QNAPost) => ({
+          ...post,
+          content: sliceContent(post.content),
+          department: changeDepartment(post.department),
+        }));
+        setPost(formattedPost);
       } else {
         try {
           const res = await axios.get(`/api/questions/posts?page=${page - 1}`, {
@@ -201,13 +256,50 @@ const QnaBoard = ({ id, page }: boardUrl) => {
             질문 게시판
           </span>
           <SolveDiv>
-            <SolveTitle className="select">전체</SolveTitle>
-            <SolveTitle>미해결</SolveTitle>
-            <SolveTitle>해결</SolveTitle>
+            <SolveTitle
+              className={status === 0 ? "select" : ""}
+              onClick={() => {
+                navigate(`/board/lists/qna/1`);
+                window.location.reload();
+              }}
+            >
+              전체
+            </SolveTitle>
+            <SolveTitle
+              className={status === 1 ? "select" : ""}
+              onClick={() => {
+                navigate(`/board/lists/qna/1/?status=UNSOLVED`);
+                window.location.reload();
+              }}
+            >
+              미해결
+            </SolveTitle>
+            <SolveTitle
+              className={status === 2 ? "select" : ""}
+              onClick={() => {
+                navigate(`/board/lists/qna/1/?status=SOLVED`);
+                window.location.reload();
+              }}
+            >
+              해결
+            </SolveTitle>
           </SolveDiv>
           <SearchDiv>
-            <input type="text" placeholder="제목 검색하기" />
-            <button>검색</button>
+            <input
+              type="text"
+              placeholder="제목 검색하기"
+              onChange={(e) => {
+                setSearchValue(e.target.value);
+              }}
+            />
+            <button
+              onClick={() => {
+                navigate(`/board/lists/qna/1/?search=${searchValue}`);
+                window.location.reload();
+              }}
+            >
+              검색
+            </button>
           </SearchDiv>
           <PostWrapper>
             {posts.map((post) => (
