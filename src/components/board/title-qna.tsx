@@ -101,8 +101,6 @@ const QnaTitle = ({
   comment,
 }: QnaTitleProps) => {
   const { boardId } = useParams();
-  const [Indetail, setDetail] = useState<string>("");
-
   const navigate = useNavigate();
   return (
     <Wrapper
