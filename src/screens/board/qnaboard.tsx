@@ -169,7 +169,7 @@ const QnaBoard = ({ id, page }: boardUrl) => {
       } else if (searchParmas.get("status")) {
       } else {
         try {
-          const res = await axios.get("/api/questions/posts", {
+          const res = await axios.get(`/api/questions/posts?page=${page - 1}`, {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },

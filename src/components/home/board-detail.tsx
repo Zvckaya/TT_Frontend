@@ -21,6 +21,18 @@ const categoryToString = (category: string) => {
       return "어울려요";
     case "STUDY":
       return "스터디";
+    case "HUMANITIES":
+      return "인문융합콘텐츠";
+    case "MANAGEMENT":
+      return "경영";
+    case "SOCIETY":
+      return "사회융합";
+    case "MEDIA_CONTENT":
+      return "미디어콘텐츠융합";
+    case "FUTURE_FUSION":
+      return "미래융합";
+    case "SOFTWARE":
+      return "소프트웨어융합";
   }
 };
 
@@ -41,6 +53,7 @@ const BoardWrapper = styled.div`
     font-size: 18px;
   }
   .detail {
+    height: 30px;
     font-weight: 100;
     font-size: 13px;
     padding-top: 10px;
@@ -68,6 +81,8 @@ const HBoardDetail = ({
   useEffect(() => {
     if (detail.length > 50) {
       setDetail(detail.substring(0, 50) + "...");
+    } else {
+      setDetail(detail);
     }
   });
 
