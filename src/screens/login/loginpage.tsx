@@ -56,36 +56,37 @@ const LoginTitle = styled.div`
     margin-bottom: 20px;
   }
 `;
-
 const LoginBtnContainer = styled.div`
-  text-align: center;
-
-  button {
-    width: 80%;
-    box-sizing: border-box;
-    padding: 13px 0;
+  .kakao {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     border-radius: 12px;
-    margin: 0 auto;
-    margin-bottom: 20px;
-  }
+    border: 1px solid #fae100;
+    background-color: #fae100;
+    margin-bottom: 10px;
 
-  .btn_login_kakao {
-    border: 1px solid #fee500;
-    background-color: #fee500;
-    span {
-      color: black;
-      font-weight: bold;
-      font-size: 15px;
+    img {
+      height: 70px;
+      margin-right: 10px;
+      display: flex;
     }
   }
 
-  .btn_login_naver {
-    border: 1px solid #03c75a;
-    background-color: #03c75a;
+  button {
+    height: 70px;
+    padding: 13px 0;
+    background-color: #fae100;
+    justify-content: center;
+    border: none;
+    font-weight: bold;
+    color: black;
+
     span {
-      color: white;
-      font-weight: bold;
-      font-size: 15px;
+      font-size: 18px;
+      margin-left: 60px;
+      text-align: center;
     }
   }
 `;
@@ -148,8 +149,6 @@ const LoginPage = () => {
   useEffect(() => {
     if (window.location.pathname === "/login/oauth2/code/kakao") {
       handleKakaoCallback();
-    } else if (window.location.pathname === "/login/oauth2/code/naver") {
-      //네이버 로그인 구현
     } else {
       console.log("그냥 로그인.");
     }
@@ -170,20 +169,12 @@ const LoginPage = () => {
               <hr />
             </LoginTitle>
             <LoginBtnContainer>
-              <button
-                type="button"
-                className="btn_login_kakao"
-                onClick={handleKakaoLogin}
-              >
-                <span>카카오 로그인</span>
-              </button>
-              <button
-                type="button"
-                className="btn_login_naver"
-                onClick={() => navigate("/account/sign_up/:userId")}
-              >
-                <span>네이버 로그인</span>
-              </button>
+              <div className="kakao" onClick={handleKakaoLogin}>
+                <img src="/imgs/kakaoimg.png" alt="kakao_logo" />
+                <button type="button" className="btn_login_kakao">
+                  <span>카카오 로그인</span>
+                </button>
+              </div>
             </LoginBtnContainer>
           </LoginTitleContainer>
         </LoginForm>

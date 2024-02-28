@@ -123,21 +123,7 @@ const Slider2 = () => {
             <br />
             7. 문제가 해결되었다면 해결완료 버튼을 눌러주세요!
             <br />
-          </Description>
-        </DetailContent>
-        <DetailContent>
-          <Header>3. 스터디관리해요</Header>
-          <SubHeader>
-            스터디관리해요 게시판은 티토찾아요 게시판에서 멤버를 찾아서 여러분이
-            스터디를 직접 관리하고 생성할 수 있는 공간입니다.
-          </SubHeader>
-          <Description>
-            스터디관리해요 게시판은 여러분이 진행하고 있는 스터디를 관리하고
-            함께 할 동료를 찾을 수 있는 공간입니다. 스터디를 함께 진행하고 싶은
-            친구를 찾아보세요! 스터디 일정을 공유하고 관리할 수 있습니다.
-            <br />
-            1. 추후 추가
-            <br />
+            <img src="/imgs/attachment.gif" />
           </Description>
         </DetailContent>
         <div
