@@ -96,15 +96,17 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     fetchData();
   }, [isLogin]);
 
-  if (isLogin === null) {
-    return null;
-  } else if (isLogin === false) {
-    navigate("/login/sign_in");
+  // if (isLogin === null) {
+  //   return null;
+  // } else if (isLogin === false) {
+  //   navigate("/login/sign_in");
 
-    return null;
-  } else {
-    return <>{children}</>;
-  }
+  //   return null;
+  // } else {
+  //   return <>{children}</>;
+  // }
+
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;
