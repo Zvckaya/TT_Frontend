@@ -7,7 +7,7 @@ import userStore from "../../stores/UserStore";
 
 // 유저 정보 타입 정의
 export type UserProfileInfo = {
-  // id: number | undefined;
+  userId: number;
   profile: string;
   name: string;
   nickname: string;
@@ -56,7 +56,7 @@ const UserProfile = () => {
   const accessToken = localStorage.getItem("accessToken");
   const [chooseList, setChooseList] = useState<ChosePost[]>([]);
   const [userProfo, setProInfo] = useState<UserProfileInfo>({
-    // id: 1,
+    userId: 1,
     profile: "",
     name: "",
     nickname: "",
@@ -155,9 +155,9 @@ const UserProfile = () => {
             <p>채택률</p>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <h1>{acceptanceRate.toFixed(1)}%</h1>
-              {/* {userStore.getUser()?.id !== userProfo.id && ( // 내 프로필이 아닐 때만 쪽지 보내기 버튼 보이기 */}
-              <div className="btn">쪽지 보내기</div>
-              {/* )} */}
+              {userStore.getUser()?.id !== userProfo.userId && (
+                <div className="btn">쪽지 보내기</div>
+              )}
             </div>
           </UserProfileMainLevelContainer>
         </UserProfileMainContainer>
