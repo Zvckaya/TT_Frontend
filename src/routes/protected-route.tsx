@@ -92,9 +92,9 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [isLogin]);
+  // useEffect(() => {
+  //   fetchData();
+  // }, [isLogin]);
 
   // if (isLogin === null) {
   //   return null;
