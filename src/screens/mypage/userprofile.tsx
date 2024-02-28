@@ -50,6 +50,7 @@ export type ChosePost = {
   viewCount: number;
   reviewCount: number;
 };
+
 const UserProfile = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
@@ -71,6 +72,24 @@ const UserProfile = () => {
     countAccept: 0,
     level: 0,
   }); // 프로필 유저 정보
+  const [max, setMax] = useState(0);
+
+  const levelStandard = [100, 300, 600, 1000];
+
+  const checkNextLevel = (totalExp: number, userLevel: number) => {
+    switch (userLevel) {
+      case 1:
+        return levelStandard[0] - totalExp;
+      case 2:
+        return levelStandard[1] - totalExp;
+      case 3:
+        return levelStandard[2] - totalExp;
+      case 4:
+        return levelStandard[3] - totalExp;
+      default:
+        return 0;
+    }
+  };
 
   const acceptanceRate =
     userProfo.countAnswer > 0
@@ -103,12 +122,19 @@ const UserProfile = () => {
             Authorization: `Bearer ${accessToken}`,
           },
         });
+
         setProInfo(response.data);
+        const maxValue = checkNextLevel(
+          response.data.totalExperience,
+          response.data.level
+        );
+        setMax(maxValue);
       } catch (error) {
         console.error("Error fetching user profile:", error);
       }
     };
-    getChooseBoardList();
+
+    //getChooseBoardList();
     fetchData();
   }, [accessToken]);
 
@@ -143,10 +169,18 @@ const UserProfile = () => {
           <UserProfileMainLevelContainer>
             <div>
               <p>다음 레벨까지</p>
-              <h1>210내공남았어요.</h1>
-              <Progress>
+              <h1>
+                {max}
+                내공남았어요.
+              </h1>
+              {/* <Progress>
                 <Dealt />
-              </Progress>
+              </Progress> */}
+              <progress
+                className="gage"
+                value={levelStandard[userProfo.level - 1] - max}
+                max={levelStandard[userProfo.level - 1]}
+              ></progress>
               <p>답변한 글 수</p>
               <h1>총 {userProfo.countAnswer}개 답변했어요.</h1>
               <p>채택된 글 수</p>
@@ -360,6 +394,14 @@ const UserProfileMainLevelContainer = styled.div`
     font-size: 15px;
     font-weight: bold;
     margin-left: 10px;
+  }
+
+  .gage {
+    width: 100%;
+    height: 10px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    color: #3e68ff;
   }
 `;
 const Progress = styled.div`
