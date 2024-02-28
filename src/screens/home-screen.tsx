@@ -64,11 +64,14 @@ const HomeScreen = () => {
 
   const getTITTOBoardList = async () => {
     try {
-      const res = await axios.get("/api/matching-board/all?page=0", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
+      const res = await axios.get(
+        "http://titto.duckdns.org/matching-board/all?page=0",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
 
       const formattedPosts = res.data.content.slice(0, 3);
       setTittoList(formattedPosts);
@@ -79,11 +82,14 @@ const HomeScreen = () => {
 
   const getQNABoardList = async () => {
     try {
-      const res = await axios.get("/api/questions/posts?page=0", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
+      const res = await axios.get(
+        "http://titto.duckdns.org/questions/posts?page=0",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
       const formattedPosts = res.data.content.slice(0, 3);
       setQnaList(formattedPosts);
       console.log(formattedPosts);
