@@ -65,13 +65,10 @@ const HomeScreen = () => {
   const getTITTOBoardList = async () => {
     try {
       const res = await axios.get(
-        "http://titto.duckdns.org/matching-board/all?page=0",
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
+        "http://titto.duckdns.org/matching-board/all?page=0"
       );
+
+      console.log(res.data.content);
 
       const formattedPosts = res.data.content.slice(0, 3);
       setTittoList(formattedPosts);
@@ -96,6 +93,14 @@ const HomeScreen = () => {
     } catch (e) {
       console.log(e);
     }
+  };
+
+  const testTT = async () => {
+    await axios.get("http://titto.duckdns.org/matching-board/all?page=0", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
   };
 
   useEffect(() => {
