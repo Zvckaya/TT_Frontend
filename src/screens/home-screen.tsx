@@ -64,9 +64,9 @@ const HomeScreen = () => {
 
   const getTITTOBoardList = async () => {
     try {
-      const res = await axios.get(
-        "http://titto.duckdns.org/matching-board/all?page=0"
-      );
+      const res = await axios.get("/matching-board/all", {
+        params: { page: 0 },
+      });
 
       console.log(res.data.content);
 
