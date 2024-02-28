@@ -4,6 +4,7 @@ import { AnswerInfo } from "../../screens/board/anserView";
 import axios from "axios";
 import { useMemo, useState } from "react";
 import ReactQuill from "react-quill";
+import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -101,6 +102,7 @@ const ModifyWrapper = styled.div`
 const AnserDetail = (answer: AnswerInfo) => {
   const [isModify, setIsModify] = useState(false);
   const [content, setContent] = useState(answer.content);
+  const navigate = useNavigate();
   const modules = useMemo(() => {
     return {
       toolbar: {
@@ -177,7 +179,9 @@ const AnserDetail = (answer: AnswerInfo) => {
 
   return (
     <Wrapper>
-      <ProfileWrapper>
+      <ProfileWrapper
+        onClick={() => navigate(`/mypage/users/${answer.authorId}/profile`)}
+      >
         <div className="profileBox">
           <img src={answer.profile} alt="User-Profile" />
           <div className="userdiv">

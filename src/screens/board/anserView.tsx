@@ -378,7 +378,9 @@ const AnswerView = () => {
       {/* 제목 표시 */}
       <TitleWrapper>{view?.title}.</TitleWrapper>
       {/* 프로필 표시 */}
-      <ProfileWrapper>
+      <ProfileWrapper
+        onClick={() => navigate(`/mypage/users/${view.authorId}/profile`)}
+      >
         <div className="profileBox">
           <img src={view.profile} alt="User-Profile" />
           <div className="userdiv">

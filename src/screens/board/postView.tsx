@@ -14,9 +14,10 @@ export type UserInfo = {
   name: string;
   profileImg: string;
   lv: number;
-  id: string;
+  id?: number | string;
   email: string;
   department?: string;
+  matchingPostAuthorId?: number;
 };
 
 // 스타일드 컴포넌트들 정의
@@ -205,8 +206,9 @@ const PostView = () => {
     name: "",
     profileImg: "",
     lv: 1,
-    id: "",
+    matchingPostAuthorId: 0,
     email: "",
+    id: 1,
   }); // 글 유저 정보
 
   interface statusMapping {
@@ -293,6 +295,7 @@ const PostView = () => {
           lv: 1,
           id: "id",
           email: "email",
+          matchingPostAuthorId: data.matchingPostAuthorId,
         });
       })
       .catch((error) => {
@@ -395,7 +398,13 @@ const PostView = () => {
       {/* 제목 표시 */}
       <TitleWrapper>{title}</TitleWrapper>
       {/* 프로필 표시 */}
-      <ProfileWrapper>
+      <ProfileWrapper
+        onClick={() =>
+          navigate(
+            `/mypage/users/${userWriteInfo.matchingPostAuthorId}/profile`
+          )
+        }
+      >
         <div className="profileBox">
           <img src={userWriteInfo.profileImg} alt="User-Profile" />
           <div className="userdiv">

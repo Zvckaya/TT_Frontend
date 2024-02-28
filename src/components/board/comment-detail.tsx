@@ -4,6 +4,7 @@ import axios from "axios";
 import { UserInfo } from "../../screens/board/postView";
 import ReactQuill from "react-quill";
 import { values } from "mobx";
+import { useNavigate } from "react-router-dom";
 
 export type CommentInfo = {
   profile: string;
@@ -14,6 +15,7 @@ export type CommentInfo = {
   content: string;
   updateDate: string;
   modify?: boolean; //기본 false
+  reviewAuthorId: number;
 };
 
 const Wrapper = styled.div`
@@ -112,7 +114,7 @@ const CommentDetail = ({ postId }: { postId: string }) => {
       },
     };
   }, []);
-
+  const navigate = useNavigate();
   const [userMyfo, setMyInfo] = useState<UserInfo>({
     name: "",
     profileImg: "",
@@ -226,7 +228,11 @@ const CommentDetail = ({ postId }: { postId: string }) => {
     <>
       {comments.map((comment) => (
         <Wrapper key={comment.reviewId}>
-          <ProfileWrapper>
+          <ProfileWrapper
+            onClick={() =>
+              navigate(`/mypage/users/${comment.reviewAuthorId}/profile`)
+            }
+          >
             <div className="profileBox">
               <img src={comment.profile} alt="User-Profile" />
               <div className="userdiv">
